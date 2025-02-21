@@ -1,5 +1,5 @@
 import {Dimensions, ImageBackground, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import bg from "@/assets/images/bg3.jpeg";
+import bg from "@/assets/images/bg.jpeg";
 import {useRouter} from "expo-router";
 
 const { width } = Dimensions.get("window")
@@ -13,7 +13,6 @@ const registerSelect = () => {
             <ImageBackground source={bg} style={styles.backgroundImage} resizeMode="cover" />
 
             <View style={{justifyContent: 'center', width: '100%', height: '100%', margin: 'auto'}}>
-                <Text style={{ color: 'black', textAlign: 'center', fontWeight: 'bold', fontSize: 28, fontFamily: 'serif', paddingVertical: 46}}>Select your account type</Text>
                 <View style={{ gap: 15, width: '85%', marginHorizontal: 'auto'}}>
                     <TouchableOpacity onPress={() => router.push('/investorRegister')}  style={styles.button}>
                         <Text style={styles.buttonText}>Investor</Text>
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
         left: 0,
     },
     button: {
-        backgroundColor: "#17df44",
+        backgroundColor: "#77a6f7",
         paddingVertical: 25,
         paddingHorizontal: 5,
         borderRadius: 15,

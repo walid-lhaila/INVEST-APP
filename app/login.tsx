@@ -9,7 +9,7 @@ import {
     Dimensions,
     SafeAreaView,
 } from "react-native"
-import bg from "../assets/images/bg3.jpeg"
+import bg from "../assets/images/bg.jpeg"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
@@ -35,7 +35,7 @@ function Login() {
                             <Text style={styles.forgotPassword}>Forgot your password ?</Text>
                             <View style={styles.signInContainer}>
                                 <Text style={styles.signInText}>Sign In</Text>
-                                <LinearGradient colors={["#1d976c", "#93F9B9"]} style={styles.gradientButton}>
+                                <LinearGradient colors={["#77a6f7", "#D3E3FC"]} style={styles.gradientButton}>
                                     <Ionicons name="arrow-forward" size={20} color="white" />
                                 </LinearGradient>
                             </View>

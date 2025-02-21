@@ -11,7 +11,7 @@ interface InputProps {
 const Input = ({placeHolder, iconName}: InputProps) => {
     return (
         <View style={styles.input}>
-            <Ionicons name={iconName} color="#bdbdbd" size={22} />
+            <Ionicons name={iconName} color="#77a6f7" size={22} />
             <TextInput placeholder={placeHolder} />
         </View>
     )
