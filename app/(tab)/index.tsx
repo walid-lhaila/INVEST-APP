@@ -1,8 +1,9 @@
 import React from 'react';
-import {Image, ImageBackground, StatusBar, StyleSheet, Text, View} from "react-native";
+import {Image, ImageBackground, ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import LoggedInUser from "@/app/Components/LoggedInUser";
 import SearchBar from "@/app/Components/SearchBar";
+import PostCard from "@/app/Components/PostCard";
 
 
 function Index() {
@@ -13,6 +14,16 @@ function Index() {
                 <View style={styles.content}>
                     <LoggedInUser />
                     <SearchBar />
+                    <ScrollView style={{paddingVertical: 10}} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true}>
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
+                    </ScrollView>
                 </View>
             </LinearGradient>
         </View>
@@ -29,8 +40,9 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     content: {
+        paddingVertical: 35,
         flex: 1,
-        top: 70,
+        top: 30,
         width: '100%'
     },
 });
