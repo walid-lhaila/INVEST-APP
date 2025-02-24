@@ -1,9 +1,45 @@
-import React from 'react';
-import {ImageBackground, ScrollView, StyleSheet, Text, View} from "react-native";
+import React, { useState } from 'react';
+import {
+    ImageBackground,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    TextInput,
+    Platform, KeyboardAvoidingView
+} from "react-native";
 import profile from "@/assets/images/profile.png";
 import ProjectRealizedCard from "@/app/Components/ProjectRealizedCard";
+import { Ionicons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 function Profile() {
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+
+    const onChangeStartDate = (event, selectedDate) => {
+        setShowStartDatePicker(Platform.OS === 'ios');
+        if (selectedDate) {
+            setStartDate(selectedDate);
+        }
+    };
+
+    const onChangeEndDate = (event, selectedDate) => {
+        setShowEndDatePicker(Platform.OS === 'ios');
+        if (selectedDate) {
+            setEndDate(selectedDate);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -17,7 +53,12 @@ function Profile() {
                 <Text style={styles.name}>Walid Lhaila</Text>
                 <Text style={styles.email}>walidlhaila00@gmail.com</Text>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true}>
+
+            <TouchableOpacity onPress={toggleModal} style={styles.addButton}>
+                <Ionicons name={"add-sharp"} color="white" size={33} />
+            </TouchableOpacity>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.sectionTitle}>About</Text>
                 <View style={styles.card}>
                     <DetailItem label="USERNAME" value="@WalidLhaila" color="#77a6f7" />
@@ -34,14 +75,64 @@ function Profile() {
                 <Text style={styles.sectionTitle}>Project Realized</Text>
                 <ProjectRealizedCard />
             </ScrollView>
+
+            <Modal
+                isVisible={isModalVisible}
+                onBackdropPress={toggleModal}
+                style={styles.modal}
+            >
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Add New Project</Text>
+
+                    <TextInput style={styles.input} placeholder="Title" placeholderTextColor="#888"/>
+
+                    <TextInput style={styles.input} placeholder="Description" placeholderTextColor="#888" multiline/>
+
+                    <TextInput style={styles.input} placeholder="Budget" placeholderTextColor="#888" keyboardType="numeric"/>
+
+                    <TextInput style={styles.input} placeholder="Tags (comma separated)" placeholderTextColor="#888"/>
+
+                    <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.datePicker}>
+                        <Text style={styles.dateText}>Start Date: {startDate.toDateString()}</Text>
+                    </TouchableOpacity>
+
+                    {showStartDatePicker && (
+                        <DateTimePicker style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginLeft: 100, marginBottom: 10}}
+                            value={startDate}
+                            mode="date"
+                            display="default"
+                            onChange={onChangeStartDate}
+                        />
+                    )}
+
+                    <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.datePicker}>
+                        <Text style={styles.dateText}>End Date: {endDate.toDateString()}</Text>
+                    </TouchableOpacity>
+
+                    {showEndDatePicker && (
+                        <DateTimePicker style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginLeft: 100, marginBottom: 10}}
+                            value={endDate}
+                            mode="date"
+                            display="default"
+                            onChange={onChangeEndDate}
+                        />
+                    )}
+
+                    <TouchableOpacity style={styles.submitButton} onPress={toggleModal}>
+                        <Text style={styles.submitText}>Submit</Text>
+                    </TouchableOpacity>
+                </View>
+                </KeyboardAvoidingView>
+            </Modal>
         </View>
     );
 }
 
 const DetailItem = ({ label, value, color = "black" }) => (
     <View style={styles.detailItem}>
-        <Text style={styles.detailLabel}>{label}</Text>
-        <Text style={[styles.detailValue, { color }]}>{value}</Text>
+        <Text>{label}</Text>
+        <Text style={ color }>{value}</Text>
     </View>
 );
 
@@ -63,10 +154,6 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 5,
         elevation: 5,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
     },
     profileImage: {
         width: 60,
@@ -107,13 +194,65 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "rgba(0,0,0,0.1)",
     },
-    detailLabel: {
-        fontSize: 14,
-        color: "gray",
-        marginBottom: 2,
+    addButton: {
+        position: 'absolute',
+        bottom: 40,
+        right: 20,
+        zIndex: 1,
+        alignItems: 'center',
+        backgroundColor: '#77a6f7',
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderRadius: 50,
+        width: 50,
+        elevation: 5,
     },
-    detailValue: {
-        fontSize: 18,
-        fontWeight: "600",
+    modal: {
+        justifyContent: 'flex-end',
+        margin: 0,
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 15,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
+        color: "#000",
+    },
+    datePicker: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
+        alignItems: "center",
+    },
+    dateText: {
+        color: "#555",
+        fontSize: 16,
+    },
+    submitButton: {
+        backgroundColor: "#77a6f7",
+        padding: 12,
+        borderRadius: 8,
+        alignItems: "center",
+        marginVertical: 5,
+    },
+    submitText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
