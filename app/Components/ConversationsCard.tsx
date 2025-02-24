@@ -1,10 +1,17 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from "react-native";
+import {ImageBackground, Pressable, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 
-function ConversationsCard({name, message, count, time}) {
+interface ConversationsCardProps {
+    name: string;
+    message: string;
+    count: string;
+    time: string;
+    onPress: () => void;
+}
+function ConversationsCard({name, message, count, time, onPress} : ConversationsCardProps) {
     return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: "#9c9c9c", borderWidth: 1, borderBottomWidth: 1, borderLeftWidth: 0, borderRightWidth: 0, borderTopWidth: 0}}>
+        <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: "#9c9c9c", borderWidth: 1, borderBottomWidth: 1, borderLeftWidth: 0, borderRightWidth: 0, borderTopWidth: 0}}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10}}>
                 <View style={styles.profileContainer}>
                     <ImageBackground
@@ -22,12 +29,12 @@ function ConversationsCard({name, message, count, time}) {
                 </View>
             </View>
             <View style={{ alignItems: 'center', gap: 5}}>
-                <Text style={{ color: '#717171'}}>{time}</Text>
-                <View style={{backgroundColor: 'white', paddingVertical: 1, paddingHorizontal: 5, borderRadius: 50}}>
+                <Text style={{ color: '#77a6f7'}}>{time}</Text>
+                <View style={{backgroundColor: '#77a6f7', paddingVertical: 1, paddingHorizontal: 5, borderRadius: 50}}>
                     <Text>{count}</Text>
                 </View>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
