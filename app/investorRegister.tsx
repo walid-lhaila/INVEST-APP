@@ -15,6 +15,7 @@ import Input from "@/app/Components/Input";
 import {LinearGradient} from "expo-linear-gradient";
 import {Ionicons} from "@expo/vector-icons";
 import useRegister from "@/app/hooks/useRegister";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -53,6 +54,7 @@ function InvestorRegister({ role = "Investor" }: { role: "Investor" | "Entrepren
                     </ScrollView>
                 </KeyboardAvoidingView>
             </SafeAreaView>
+            <Toast />
         </View>
     );
 }
