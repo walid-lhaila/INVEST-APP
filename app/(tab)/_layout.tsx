@@ -15,6 +15,12 @@ export default function TabLayout() {
                 tabBarStyle: {
                     backgroundColor: "white",
                     height: 70,
+                    shadowColor: 'gray',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 8,
+                    elevation: 5,
+                    marginBottom: 2
                 },
             }}
         >
