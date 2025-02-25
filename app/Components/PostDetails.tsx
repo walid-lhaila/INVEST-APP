@@ -32,7 +32,7 @@ function PostDetails({ visible, onClose, title, description, location, category,
                         </TouchableOpacity>
                     </View>
 
-                    <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.jobInfo}>
                             <Image source={ src } style={styles.companyLogo} />
                             <View>

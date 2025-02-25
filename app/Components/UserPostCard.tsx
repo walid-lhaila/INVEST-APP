@@ -1,0 +1,159 @@
+import { ImageBackground, Pressable, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import profile from "@/assets/images/profile.png";
+import { Ionicons } from "@expo/vector-icons";
+
+interface UserPostCardProps {
+    title: string;
+    description: string;
+    category: string;
+    location: string;
+    currentInvestment: string;
+    investmentGoal: string;
+    entrepreneur: string;
+    onDelete: () => void;
+    onPress: () => void;
+}
+function UserPostCard({ onPress, title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete }: UserPostCardProps) {
+    return (
+        <Pressable onPress={onPress} style={styles.card}>
+            <View style={styles.header}>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.investment}>${currentInvestment}/{investmentGoal}</Text>
+            </View>
+
+            <Text style={styles.description}>{description}</Text>
+
+            <View style={styles.infoContainer}>
+                <View style={styles.tag}>
+                    <Text style={styles.tagText}>{category}</Text>
+                </View>
+                <View style={styles.tag}>
+                    <Text style={styles.tagText}>{location}</Text>
+                </View>
+            </View>
+
+            <View style={styles.footer}>
+                <View style={styles.entrepreneurInfo}>
+                    <ImageBackground
+                        style={styles.profileImage}
+                        source={profile}
+                        resizeMode="cover"
+                    />
+                    <View>
+                        <Text style={styles.entrepreneur}>{entrepreneur}</Text>
+                        <View style={styles.role}>
+                            <Ionicons name="briefcase-outline" size={13} color="#77a6f7" />
+                            <Text style={styles.roleText}>Entrepreneur</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.actions}>
+                    <Text style={styles.time}>2h ago</Text>
+                    <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
+                        <Ionicons name="trash-outline" size={20} color="white" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Pressable>
+    );
+}
+
+export default UserPostCard;
+
+const styles = StyleSheet.create({
+    card: {
+        width: '95%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        marginTop: 15,
+        padding: 12,
+        alignSelf: "center",
+        shadowColor: '#77a6f7',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        flexShrink: 1,
+    },
+    investment: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: '#77a6f7',
+    },
+    description: {
+        paddingVertical: 6,
+        fontSize: 14,
+        color: 'gray',
+    },
+    infoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 6,
+    },
+    tag: {
+        backgroundColor: '#f0f0f0',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 10,
+    },
+    tagText: {
+        fontWeight: '600',
+        fontSize: 13,
+    },
+    footer: {
+        flexDirection: "row",
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    entrepreneurInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 10,
+    },
+    profileImage: {
+        width: 35,
+        height: 35,
+        borderRadius: 50,
+        overflow: "hidden",
+    },
+    entrepreneur: {
+        color: 'gray',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    role: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 2,
+    },
+    roleText: {
+        color: 'gray',
+        fontSize: 14,
+        marginLeft: 5,
+    },
+    actions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    time: {
+        color: "#77a6f7",
+        fontSize: 15,
+        fontWeight: '600',
+        marginRight: 10,
+    },
+    deleteButton: {
+        backgroundColor: 'red',
+        padding: 8,
+        borderRadius: 10,
+    },
+});
