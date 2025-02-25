@@ -3,7 +3,18 @@ import {ImageBackground, Pressable, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 
-function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur}) {
+interface PostCardProps {
+    title: string;
+    description: string;
+    category: string;
+    location: string;
+    currentInvestment: string;
+    investmentGoal: string;
+    entrepreneur: string;
+    onPress: () => void;
+}
+
+function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur}: PostCardProps) {
     return (
         <Pressable onPress={onPress} style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, marginTop: 15, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10}}>
