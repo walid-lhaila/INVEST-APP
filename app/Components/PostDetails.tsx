@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Modal,
     View,
@@ -7,15 +7,25 @@ import {
     StyleSheet,
     TouchableOpacity,
     ScrollView,
-    Pressable,
     ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import ChatHeader from "@/app/Components/ChatHeader";
 import {useRouter} from "expo-router";
 import profile from "@/assets/images/profile.png";
 
-function PostDetails({ visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src }) {
+interface PostDetailsProps {
+    title: string;
+    description: string;
+    category: string;
+    location: string;
+    currentInvestment: string;
+    investmentGoal: string;
+    src: string;
+    onClose: () => void;
+    visible: () => void;
+}
+
+function PostDetails({ visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src }: PostDetailsProps) {
     const Router = useRouter();
     return (
         <Modal visible={visible} transparent animationType="slide">
@@ -110,7 +120,7 @@ function PostDetails({ visible, onClose, title, description, location, category,
                             <Ionicons name="bookmark-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Favorite</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.messageButton}>
+                        <TouchableOpacity onPress={() => Router.push('/(tab)/chat')} style={styles.messageButton}>
                             <Ionicons name="chatbubble-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Message</Text>
                         </TouchableOpacity>
