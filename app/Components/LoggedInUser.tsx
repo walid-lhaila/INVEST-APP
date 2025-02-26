@@ -1,10 +1,15 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, ImageBackground, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
+import useUser from "@/app/hooks/useUser";
 
 
 function LoggedInUser() {
+    const {user, loading} = useUser();
+    if(loading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', marginHorizontal: 'auto'}}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10}}>
@@ -17,10 +22,10 @@ function LoggedInUser() {
                 </View>
 
                 <View>
-                    <Text style={{color: 'white', fontSize: 18, fontWeight: 700, fontFamily: "Roboto"}}>Walid Lhaila</Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#5b94f7', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10}}>
+                    <Text style={{color: 'white', fontSize: 18, fontWeight: 700, fontFamily: "Roboto"}}>{user.firstName} {user.lastName}</Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#5b94f7', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10, width: 'auto'}}>
                         <Ionicons name={"briefcase-outline"} size={13} color={"white"} />
-                        <Text style={{color: 'white', fontSize: 14, fontWeight: 300, fontFamily: "serif"}}>Entrepreneur</Text>
+                        <Text style={{color: 'white', fontSize: 14, fontWeight: 400, fontFamily: "serif"}}>{user.role}</Text>
                     </View>
                 </View>
             </View>
