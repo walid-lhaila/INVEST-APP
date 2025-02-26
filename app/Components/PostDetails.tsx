@@ -44,7 +44,7 @@ function PostDetails({ visible, onClose, title, description, location, category,
 
                     <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.jobInfo}>
-                            <Image source={ src } style={styles.companyLogo} />
+                            <Image source={{ uri: src}} style={styles.companyLogo} />
                             <View>
                                 <Text style={styles.jobTitle}>{title}</Text>
                                 <Text style={styles.companyName}>Location • {location}</Text>
