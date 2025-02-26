@@ -23,7 +23,6 @@ interface PostDetailsProps {
     currentInvestment: string;
     investmentGoal: string;
     src: string;
-    role: string;
     status: string;
     entrepreneur: string;
     onClose: () => void;
