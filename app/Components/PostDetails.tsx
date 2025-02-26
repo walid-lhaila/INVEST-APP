@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Modal,
     View,
@@ -7,11 +7,13 @@ import {
     StyleSheet,
     TouchableOpacity,
     ScrollView,
-    ImageBackground
+    ImageBackground,
+    ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import {useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 import profile from "@/assets/images/profile.png";
+import useGetUserByUsername from "@/app/hooks/useGetUserByUsername";
 
 interface PostDetailsProps {
     title: string;
@@ -21,17 +23,29 @@ interface PostDetailsProps {
     currentInvestment: string;
     investmentGoal: string;
     src: string;
+    role: string;
+    status: string;
+    entrepreneur: string;
     onClose: () => void;
-    visible: () => void;
+    visible: boolean;
 }
 
-function PostDetails({ visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src }: PostDetailsProps) {
+function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur}: PostDetailsProps) {
     const Router = useRouter();
+    const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
+    const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
+
+    useEffect(() => {
+        if (visible && entrepreneur) {
+            getUserByUsername(entrepreneur);
+        }
+    }, [visible, entrepreneur]);
+
+
     return (
-        <Modal visible={visible} transparent animationType="slide">
+        <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-
                     <View style={styles.header}>
                         <TouchableOpacity onPress={onClose}>
                             <Ionicons name="arrow-back" size={24} color="black" />
@@ -44,9 +58,9 @@ function PostDetails({ visible, onClose, title, description, location, category,
 
                     <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.jobInfo}>
-                            <Image source={{ uri: src}} style={styles.companyLogo} />
+                            <Image source={{ uri: src }} style={styles.companyLogo} />
                             <View>
-                                <Text style={styles.jobTitle}>{title}</Text>
+                                <Text style={styles.jobTitle}>{truncateTitle}</Text>
                                 <Text style={styles.companyName}>Location • {location}</Text>
                             </View>
                             <TouchableOpacity>
@@ -62,57 +76,74 @@ function PostDetails({ visible, onClose, title, description, location, category,
                         </View>
 
                         <View style={styles.tabs}>
-                                <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-                                    <Text style={[styles.tabText, styles.activeTabText]}>Description</Text>
-                                </TouchableOpacity>
+                            <TouchableOpacity style={[styles.tab, styles.activeTab]}>
+                                <Text style={[styles.tabText, styles.activeTabText]}>Description</Text>
+                            </TouchableOpacity>
                         </View>
 
-                            <View style={styles.content}>
-                                <Text style={styles.sectionTitle}>About this role</Text>
-                                <Text style={styles.description}>{description}</Text>
+                        <View style={styles.content}>
+                            <Text style={styles.sectionTitle}>About this role</Text>
+                            <Text style={styles.description}>{description}</Text>
 
-                                <Text style={styles.sectionTitle}>Catgeory</Text>
+                            <Text style={styles.sectionTitle}>Category</Text>
+                            <Text style={styles.qualification}>• {category}</Text>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={styles.sectionTitle}>Details</Text>
                                 <Text style={styles.qualification}>• Technologies</Text>
-                                <View style={{ marginTop: 10}}>
-                                    <Text style={styles.sectionTitle}>Details</Text>
-                                    <Text style={styles.qualification}>• Technologies</Text>
-                                    <Text style={styles.qualification}>• Investment Goal : $2000</Text>
-                                    <Text style={styles.qualification}>• Current Investment : $6000</Text>
-                                    <Text style={styles.qualification}>• Status: Publié</Text>
-                                </View>
+                                <Text style={styles.qualification}>• Investment Goal: ${investmentGoal}</Text>
+                                <Text style={styles.qualification}>• Current Investment: ${currentInvestment}</Text>
+                                <Text style={styles.qualification}>• Status: {status}</Text>
                             </View>
+                        </View>
 
-                            <View style={styles.content}>
-                                <Text style={styles.sectionTitle}>Company Information</Text>
-                                <Text style={styles.qualification}>• Tech Innovation</Text>
-                                <Text style={styles.description}>Google is a multinational technology company...</Text>
-                            </View>
+                        <View style={styles.content}>
+                            <Text style={styles.sectionTitle}>Company Information</Text>
+                            {isLoading ? (
+                                <ActivityIndicator size="small" color="#77a6f7" />
+                            ) : error ? (
+                                <Text style={styles.error}>Error: {error}</Text>
+                            ) : user ? (
+                                <>
+                                    <Text style={styles.qualification}>• {user.companyName}</Text>
+                                    <Text style={styles.qualification}>• {user.companyDescription}</Text>
+                                </>
+                            ) : (
+                                <Text style={styles.error}>No company information available</Text>
+                            )}
+                        </View>
 
                         <View style={styles.content}>
                             <Text style={styles.sectionTitle}>Contact Information</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', gap: 20, }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10}}>
-                                    <View style={styles.profileContainer}>
-                                        <ImageBackground
-                                            style={styles.profileImage}
-                                            source={profile}
-                                            resizeMode="cover"
-                                        />
-                                    </View>
+                            {isLoading ? (
+                                <ActivityIndicator size="small" color="#77a6f7" />
+                            ) : error ? (
+                                <Text style={styles.error}>Error: {error}</Text>
+                            ) : user ? (
+                                <>
+                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                                        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 10 }}>
+                                            <View style={styles.profileContainer}>
+                                                <ImageBackground style={styles.profileImage} source={profile} resizeMode="cover"/>
+                                            </View>
 
-                                    <View>
-                                        <Text style={{color: 'black', fontSize: 17, fontWeight: 700, fontFamily: "Roboto"}}>Walid Lhaila</Text>
-                                        <View style={{backgroundColor: "#77a6f7", flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10}}>
-                                            <Ionicons name={"briefcase-outline"} size={13} color={"white"} />
-                                            <Text style={{color: 'white', fontSize: 13, fontWeight: 300, fontFamily: "serif"}}>Entrepreneur</Text>
+                                            <View>
+                                                <Text style={{ color: "black", fontSize: 17, fontWeight: "700", fontFamily: "Roboto" }}>
+                                                    {user.firstName} {user.lastName}
+                                                </Text>
+                                                <View style={{backgroundColor: "#77a6f7", flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10,}}>
+                                                    <Ionicons name={"briefcase-outline"} size={13} color={"white"} />
+                                                    <Text style={{ color: "white", fontSize: 13, fontWeight: "300", fontFamily: "serif" }}>{user.role}</Text>
+                                                </View>
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                            </View>
-                            <Text style={styles.qualification}>• +212 65645345</Text>
-                            <Text style={styles.qualification}>• walidlhaila00@gmail.com</Text>
+                                    <Text style={styles.qualification}>• (+212) {user.phone}</Text>
+                                    <Text style={styles.qualification}>• {user.email}</Text>
+                                </>
+                            ) : (
+                                <Text style={styles.error}>No contact information available</Text>
+                            )}
                         </View>
-
                     </ScrollView>
 
                     <View style={styles.buttonContainer}>
@@ -120,12 +151,11 @@ function PostDetails({ visible, onClose, title, description, location, category,
                             <Ionicons name="bookmark-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Favorite</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Router.push('/(tab)/chat')} style={styles.messageButton}>
+                        <TouchableOpacity onPress={() => Router.push("/(tab)/chat")} style={styles.messageButton}>
                             <Ionicons name="chatbubble-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Message</Text>
                         </TouchableOpacity>
                     </View>
-
                 </View>
             </View>
         </Modal>
@@ -161,7 +191,7 @@ const styles = StyleSheet.create({
     },
     scrollContainer: {
         paddingBottom: 90,
-        marginTop: 10
+        marginTop: 10,
     },
     jobInfo: {
         flexDirection: "row",
@@ -269,13 +299,13 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     profileContainer: {
-        backgroundColor: 'white',
+        backgroundColor: "white",
         borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         padding: 5,
         elevation: 5,
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
@@ -284,6 +314,11 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 25,
-        overflow: 'hidden',
+        overflow: "hidden",
+    },
+    error: {
+        color: "red",
+        fontSize: 14,
+        marginTop: 10,
     },
 });
