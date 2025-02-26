@@ -7,19 +7,23 @@ import {
     View,
     ScrollView,
     Dimensions,
-    SafeAreaView,
+    SafeAreaView, ActivityIndicator,
 } from "react-native"
 import bg from "../assets/images/bg.jpeg"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
 import Input from "@/app/Components/Input"
+import useLogin from "@/app/hooks/useLogin";
+import {useRouter} from "expo-router";
+import {Toast} from "@/app/CustomToast";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
 
 function Login() {
-    const Router = useRouter()
+    const Router = useRouter();
+    const { handleLogin, setUsername, setPassword, isLoading } = useLogin();
+
     return (
         <View style={styles.container}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -30,14 +34,18 @@ function Login() {
                         <Text style={styles.text}>Hello</Text>
                         <Text style={styles.subText}>Sign in to your account</Text>
                         <View style={styles.inputContainer}>
-                            <Input placeHolder="Username" iconName="person" />
-                            <Input placeHolder="Password" iconName="lock-closed" />
+                            <Input placeHolder="Username" iconName="person" onChangeText={setUsername} />
+                            <Input placeHolder="Password" iconName="lock-closed" onChangeText={setPassword} />
                             <Text style={styles.forgotPassword}>Forgot your password ?</Text>
-                            <Pressable onPress={() => Router.push("(tab)")} style={styles.signInContainer}>
+                            <Pressable onPress={handleLogin} style={styles.signInContainer} disabled={isLoading}>
                                 <Text style={styles.signInText}>Sign In</Text>
                                 <LinearGradient colors={["#77a6f7", "#D3E3FC"]} style={styles.gradientButton}>
-                                    <Ionicons name="arrow-forward" size={20} color="white" />
-                                  </LinearGradient>
+                                    {isLoading ? (
+                                        <ActivityIndicator size="small" color="white" />
+                                    ) : (
+                                        <Ionicons name="arrow-forward" size={20} color="white" />
+                                    )}
+                                </LinearGradient>
                             </Pressable>
                             <Pressable onPress={() => Router.push("/registerSelect")}>
                                 <Text style={styles.createAccountText}>Don't have an account ? Create</Text>
@@ -46,6 +54,7 @@ function Login() {
                     </View>
                 </ScrollView>
             </SafeAreaView>
+            <Toast />
         </View>
     )
 }
