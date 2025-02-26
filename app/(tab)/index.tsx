@@ -1,31 +1,76 @@
-import React, {useState} from 'react';
-import {ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import LoggedInUser from "@/app/Components/LoggedInUser";
 import SearchBar from "@/app/Components/SearchBar";
 import PostCard from "@/app/Components/PostCard";
 import PostDetails from "@/app/Components/PostDetails";
-import image from "../../assets/images/AI.jpeg"
-
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "@/app/redux/slices/PostSlice";
 
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
+
+    const dispatch = useDispatch();
+    const { posts, isLoading } = useSelector((state) => state.posts);
+
+    useEffect(() => {
+        dispatch(getAllPosts());
+    }, [dispatch]);
+
+    const openPostDetails = (post) => {
+        setSelectedPost(post);
+        setModalVisible(true);
+    };
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar translucent backgroundColor="transparent" />
-            <LinearGradient colors={['#77a6f7', '#f6f7ff']} style={styles.gradient}>
-                <View style={styles.content}>
-                    <LoggedInUser />
-                    <SearchBar />
-                    <ScrollView style={{paddingVertical: 10}} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true}>
-                        <PostCard onPress={() => setModalVisible(true)} title="New Investment in IA" description="An exciting new investment opportunity in IA." location="Casablanca" currentInvestment='2000' investmentGoal='5000' entrepreneur="Walid Lhaila" category="Technologies" />
-                    </ScrollView>
-                </View>
-            </LinearGradient>
-
-            <PostDetails visible={modalVisible} onClose={() => setModalVisible(false)} title="New Investment in IA" description="An exciting new investment opportunity in IA." location="Casablanca" currentInvestment='2000' investmentGoal='5000' src={image} category="Technologies" />
-
+            {isLoading ? (
+                <ActivityIndicator size="large" color="#77a6f7" style={styles.loadingIndicator} />
+            ) : (
+                <LinearGradient colors={['#77a6f7', '#f6f7ff']} style={styles.gradient}>
+                    <View style={styles.content}>
+                        <LoggedInUser />
+                        <SearchBar />
+                        <ScrollView
+                            style={{ paddingVertical: 10 }}
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                            nestedScrollEnabled={true}
+                        >
+                            {posts.map((post) => (
+                                <PostCard
+                                    key={post._id}
+                                    onPress={() => openPostDetails(post)}
+                                    title={post.title}
+                                    description={post.description}
+                                    location={post.location}
+                                    currentInvestment={post.currentInvestment}
+                                    investmentGoal={post.investmentGoal}
+                                    entrepreneur={post.entrepreneurId}
+                                    category={post.category}
+                                />
+                            ))}
+                        </ScrollView>
+                    </View>
+                </LinearGradient>
+            )}
+            {selectedPost && (
+                <PostDetails
+                    visible={modalVisible}
+                    onClose={() => setModalVisible(false)}
+                    title={selectedPost.title}
+                    description={selectedPost.description}
+                    location={selectedPost.location}
+                    currentInvestment={selectedPost.currentInvestment}
+                    investmentGoal={selectedPost.investmentGoal}
+                    entrepreneur={selectedPost.entrepreneurId}
+                    category={selectedPost.category}
+                    src={selectedPost.imageUrl}
+                />
+            )}
         </View>
     );
 }
@@ -43,6 +88,11 @@ const styles = StyleSheet.create({
         paddingVertical: 35,
         flex: 1,
         top: 30,
-        width: '100%'
+        width: '100%',
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
