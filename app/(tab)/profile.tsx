@@ -17,13 +17,10 @@ import useUser from "@/app/hooks/useUser";
 
 function Profile() {
     const [isModalVisible, setModalVisible] = useState(false);
-
     const { user, loading } = useUser();
-
     if(loading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
-
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
@@ -80,10 +77,10 @@ function Profile() {
     );
 }
 
-const DetailItem = ({ label, value, color = "black" }) => (
+const DetailItem = ({ label, value, color = "black", }) => (
     <View style={styles.detailItem}>
         <Text>{label}</Text>
-        <Text style={{ color }}>{value}</Text>
+        <Text style={{ color, paddingVertical: 3 }}>{value}</Text>
     </View>
 );
 

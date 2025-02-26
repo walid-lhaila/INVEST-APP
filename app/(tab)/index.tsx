@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import LoggedInUser from "@/app/Components/LoggedInUser";
 import SearchBar from "@/app/Components/SearchBar";
 import PostCard from "@/app/Components/PostCard";
 import PostDetails from "@/app/Components/PostDetails";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllPosts } from "@/app/redux/slices/PostSlice";
+import useGetAllPosts from "@/app/hooks/useGetAllPosts";
 
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
 
-    const dispatch = useDispatch();
-    const { posts, isLoading } = useSelector((state) => state.posts);
-
-    useEffect(() => {
-        dispatch(getAllPosts());
-    }, [dispatch]);
+    const {posts, isLoading} = useGetAllPosts();
 
     const openPostDetails = (post) => {
         setSelectedPost(post);
         setModalVisible(true);
     };
-
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -49,7 +42,7 @@ function Index() {
                                     location={post.location}
                                     currentInvestment={post.currentInvestment}
                                     investmentGoal={post.investmentGoal}
-                                    entrepreneur={post.entrepreneurId}
+                                    entrepreneur={post.entrepreneur}
                                     category={post.category}
                                 />
                             ))}
@@ -66,9 +59,10 @@ function Index() {
                     location={selectedPost.location}
                     currentInvestment={selectedPost.currentInvestment}
                     investmentGoal={selectedPost.investmentGoal}
-                    entrepreneur={selectedPost.entrepreneurId}
+                    entrepreneur={selectedPost.entrepreneur}
                     category={selectedPost.category}
                     src={selectedPost.imageUrl}
+                    status={selectedPost.status}
                 />
             )}
         </View>
