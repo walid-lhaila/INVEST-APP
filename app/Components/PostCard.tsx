@@ -15,11 +15,15 @@ interface PostCardProps {
 }
 
 function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur}: PostCardProps) {
+    const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
+    const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
+
+
     return (
         <Pressable onPress={onPress} style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, marginTop: 15, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10}}>
-                <Text style={{fontWeight: 900, fontSize: 20}}>{title}</Text>
-                <Text style={{fontWeight: 800, fontSize: 18, color: '#77a6f7'}}>${currentInvestment}/{investmentGoal}</Text>
+                <Text style={{fontWeight: 900, fontSize: 20}}>{truncateTitle}</Text>
+                <Text style={{fontWeight: 800, fontSize: 17, color: '#77a6f7'}}>${currentInvestment}/{investmentGoal}</Text>
             </View>
             <Text style={{paddingHorizontal: 10, fontSize: 14, fontWeight: 400, color: 'gray'}}>{description}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',  paddingHorizontal: 10,}}>
@@ -43,7 +47,7 @@ function PostCard({onPress, title, description ,category, location, currentInves
                     </View>
 
                     <View>
-                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>{entrepreneur}</Text>
+                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>{truncateUser}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10}}>
                             <Ionicons name={"briefcase-outline"} size={13} color={"#77a6f7"} />
                             <Text style={{color: 'gray', fontSize: 14, fontWeight: 300, fontFamily: "serif"}}>Entrepreneur</Text>
