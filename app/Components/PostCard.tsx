@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ImageBackground, Pressable, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
+import useAnimatedPercentage from "@/app/hooks/useAnimatedPercentage";
 
 interface PostCardProps {
     title: string;
     description: string;
     category: string;
     location: string;
-    currentInvestment: string;
-    investmentGoal: string;
+    currentInvestment: number;
+    investmentGoal: number;
     entrepreneur: string;
     onPress: () => void;
 }
@@ -17,13 +18,18 @@ interface PostCardProps {
 function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur}: PostCardProps) {
     const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
-
-
+    const targetPercentage = Math.floor((currentInvestment / investmentGoal) * 100);
+    const animatedPercentage = useAnimatedPercentage(targetPercentage)
     return (
         <Pressable onPress={onPress} style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, marginTop: 15, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems: 'center'}}>
                 <Text style={{fontWeight: 900, fontSize: 20}}>{truncateTitle}</Text>
-                <Text style={{fontWeight: 800, fontSize: 17, color: '#77a6f7'}}>${currentInvestment}/{investmentGoal}</Text>
+                <View style={{ paddingHorizontal: 10, width: '40%' }}>
+                    <View style={styles.progressBarContainer}>
+                        <View style={[styles.progressBar, {width: `${animatedPercentage}%`}]}/>
+                    </View>
+                    <Text style={styles.percentageText}>{animatedPercentage}%</Text>
+                </View>
             </View>
             <Text style={{paddingHorizontal: 10, fontSize: 14, fontWeight: 400, color: 'gray'}}>{description}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',  paddingHorizontal: 10,}}>
@@ -82,5 +88,26 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         overflow: 'hidden',
     },
-
+    progressBarContainer: {
+        position: 'relative',
+        height: 23,
+        width: '100%',
+        backgroundColor: '#e0e0e0',
+        borderRadius: 5,
+        overflow: 'hidden',
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#77a6f7',
+        borderRadius: 5,
+    },
+    percentageText: {
+        position: 'absolute',
+        fontSize: 14,
+        fontWeight: '800',
+        color: 'white',
+        textAlign: 'center',
+        top: 4,
+        left: 60
+    },
 });
