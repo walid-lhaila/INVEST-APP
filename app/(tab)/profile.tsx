@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    ActivityIndicator,
     ImageBackground,
     ScrollView,
     StyleSheet,
@@ -12,9 +13,16 @@ import ProjectRealizedCard from "@/app/Components/ProjectRealizedCard";
 import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import ProjectRealizedForm from "@/app/Components/ProjectRealizedForm";
+import useUser from "@/app/hooks/useUser";
 
 function Profile() {
     const [isModalVisible, setModalVisible] = useState(false);
+
+    const { user, loading } = useUser();
+
+    if(loading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -30,8 +38,8 @@ function Profile() {
                         resizeMode="cover"
                     />
                 </View>
-                <Text style={styles.name}>Walid Lhaila</Text>
-                <Text style={styles.email}>walidlhaila00@gmail.com</Text>
+                <Text style={styles.name}>{user.firstName} {user.lastName}</Text>
+                <Text style={styles.email}>{user.email}</Text>
             </View>
 
             <TouchableOpacity onPress={toggleModal} style={styles.addButton}>
@@ -41,16 +49,21 @@ function Profile() {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.sectionTitle}>About</Text>
                 <View style={styles.card}>
-                    <DetailItem label="USERNAME" value="@WalidLhaila" color="#77a6f7" />
-                    <DetailItem label="MOBILE" value="(+212) 65667828" />
-                    <DetailItem label="SERVICE" value="IA Solutions" />
+                    <DetailItem label="USERNAME" value={user.username} color="#77a6f7" />
+                    <DetailItem label="MOBILE" value={user.phone} />
+                    <DetailItem label="SERVICE" value={user.services} />
                 </View>
 
-                <Text style={styles.sectionTitle}>Company</Text>
-                <View style={styles.card}>
-                    <DetailItem label="NAME" value="Tech Innovations" />
-                    <DetailItem label="DESCRIPTION" value="A tech startup focused on AI" />
-                </View>
+                {user.role === "Entrepreneur" ? (
+                    <>
+                        <Text style={styles.sectionTitle}>Company</Text>
+                        <View style={styles.card}>
+                            <DetailItem label="NAME" value={user.companyName} />
+                            <DetailItem label="DESCRIPTION" value={user.companyDescription} />
+                        </View>
+                    </>
+                ) : null}
+
 
                 <Text style={styles.sectionTitle}>Project Realized</Text>
                 <ProjectRealizedCard />
@@ -70,7 +83,7 @@ function Profile() {
 const DetailItem = ({ label, value, color = "black" }) => (
     <View style={styles.detailItem}>
         <Text>{label}</Text>
-        <Text style={{ color }}>{value}</Text>  {/* Fixed incorrect color usage */}
+        <Text style={{ color }}>{value}</Text>
     </View>
 );
 

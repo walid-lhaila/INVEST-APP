@@ -60,7 +60,6 @@ export const login = createAsyncThunk(
             await AsyncStorage.setItem('token', token);
             await AsyncStorage.setItem('user', JSON.stringify(user));
 
-            console.log( await AsyncStorage.getItem('token'))
             return {token, user};
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Login Failed");
