@@ -5,12 +5,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface PostState {
     posts: [];
+    userPosts: [];
     isLoading: boolean;
     error: string | null
 };
 
 const initialState: PostState = {
     posts: [],
+    userPosts: [],
     isLoading: false,
     error: null,
 }
@@ -76,7 +78,28 @@ export const createPosts = createAsyncThunk(
     }
 );
 
-
+export const getAllPostsByUser = createAsyncThunk(
+    'posts/getAllPostsByUser',
+    async(_, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/posts/getAllPostsByUserId`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+            );
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+        }
+    }
+);
 
 
 
@@ -99,6 +122,7 @@ const postSlice = createSlice({
                 state.error = action.payload as string;
             })
 
+
             .addCase(createPosts.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -110,7 +134,21 @@ const postSlice = createSlice({
             .addCase(createPosts.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
-            });
+            })
+
+
+            .addCase(getAllPostsByUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getAllPostsByUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.userPosts = action.payload;
+            })
+            .addCase(getAllPostsByUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
     },
 });
 

@@ -10,7 +10,6 @@ import useGetAllPosts from "@/app/hooks/useGetAllPosts";
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
-
     const {posts, isLoading} = useGetAllPosts();
 
     const openPostDetails = (post) => {
