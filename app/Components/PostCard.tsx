@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ImageBackground, Pressable, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 import useAnimatedPercentage from "@/app/hooks/useAnimatedPercentage";
+import {formatDistanceToNow} from "date-fns";
 
 interface PostCardProps {
     title: string;
@@ -12,12 +13,14 @@ interface PostCardProps {
     currentInvestment: number;
     investmentGoal: number;
     entrepreneur: string;
+    createdAt: string;
     onPress: () => void;
 }
 
-function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur}: PostCardProps) {
+function PostCard({onPress, title, description ,category, location, currentInvestment, investmentGoal, entrepreneur, createdAt}: PostCardProps) {
     const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
+    const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
     const targetPercentage = Math.floor((currentInvestment / investmentGoal) * 100);
     const animatedPercentage = useAnimatedPercentage(targetPercentage)
     return (
@@ -60,7 +63,7 @@ function PostCard({onPress, title, description ,category, location, currentInves
                         </View>
                     </View>
                 </View>
-                <Text style={{ color: "#77a6f7", fontSize: 15, fontWeight: 600}}>2h ago</Text>
+                <Text style={{ color: "#77a6f7", fontSize: 15, fontWeight: 600}}>{timeAgo}</Text>
             </View>
         </Pressable>
     );
