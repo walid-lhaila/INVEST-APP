@@ -19,6 +19,7 @@ interface PostDetailsProps {
     title: string;
     description: string;
     category: string;
+    tags: string;
     location: string;
     currentInvestment: string;
     investmentGoal: string;
@@ -29,7 +30,7 @@ interface PostDetailsProps {
     visible: boolean;
 }
 
-function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur}: PostDetailsProps) {
+function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags}: PostDetailsProps) {
     const Router = useRouter();
     const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
     const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
@@ -68,10 +69,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                         </View>
 
                         <View style={styles.tagsContainer}>
-                            <Text style={styles.tag}>Fulltime</Text>
-                            <Text style={styles.tag}>Remote</Text>
-                            <Text style={styles.tag}>3-5 YoE</Text>
-                            <Text style={styles.tag}>Finance</Text>
+                            <Text style={styles.tag}>{tags}</Text>
                         </View>
 
                         <View style={styles.tabs}>

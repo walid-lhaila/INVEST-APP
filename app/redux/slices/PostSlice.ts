@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 interface PostState {
@@ -33,6 +34,51 @@ export const getAllPosts = createAsyncThunk(
     }
 );
 
+export const createPosts = createAsyncThunk(
+    'posts/createPOst',
+    async({postData, file}: {postData: any; file: any}, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const formData = new FormData();
+            formData.append('title', postData.title);
+            formData.append('description', postData.description);
+            formData.append('category', postData.category);
+            formData.append('investmentGoal', postData.investmentGoal);
+            formData.append('currentInvestment', postData.currentInvestment);
+            formData.append('location', postData.location);
+            formData.append('tags', postData.tags);
+            formData.append('status', postData.status);
+            if(file) {
+                formData.append('image', {
+                    uri: file.uri,
+                    type: file.type,
+                    name: file.name,
+                });
+            }
+
+
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/posts/create`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+        }
+    }
+);
+
+
+
+
 
 const postSlice = createSlice({
     name: 'posts',
@@ -52,6 +98,19 @@ const postSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
+
+            .addCase(createPosts.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(createPosts.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.posts.push(action.payload);
+            })
+            .addCase(createPosts.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            });
     },
 });
 
