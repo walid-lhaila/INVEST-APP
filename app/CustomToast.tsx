@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         width: "90%",
         alignSelf: "center",
-        marginTop: 10,
+        marginTop: 20,
         elevation: 5,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
