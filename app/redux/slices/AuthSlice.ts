@@ -40,7 +40,7 @@ export const register = createAsyncThunk(
             return response.data;
         } catch (error) {
             console.error('Error:', error);
-            throw  rejectWithValue(error.message || "Something Went Wrong")
+            throw  rejectWithValue(error?.message || "Something Went Wrong")
         }
     }
 );
@@ -62,7 +62,7 @@ export const login = createAsyncThunk(
 
             return {token, user};
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || "Login Failed");
+            return rejectWithValue(error?.response?.data?.message || "Login Failed");
         }
     }
 )
