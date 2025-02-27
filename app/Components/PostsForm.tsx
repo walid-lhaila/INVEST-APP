@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
-import { StatusBar, View, TouchableOpacity, ScrollView, Alert, Image, Text, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import {
+    StatusBar,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    Alert,
+    Image,
+    Text,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomInput from '../Components/PostsInput';
 import useImagePicker from '../hooks/useImagePicker';
+import {useDispatch, useSelector} from "react-redux";
+import {createPosts} from "@/app/redux/slices/PostSlice";
+import {Ionicons} from "@expo/vector-icons";
+import useCreatePosts from "@/app/hooks/useCreatePosts";
+import {Toast} from "@/app/CustomToast";
 
-function PostsForm() {
+function PostsForm({onClose}) {
+    const {isLoading} = useSelector((state) => state.posts);
     const { imageUri, pickImage, setImageUri } = useImagePicker();
-
-    const [form, setForm] = useState({
-        title: '',
-        description: '',
-        category: '',
-        investmentGoal: '',
-        currentInvestment: '',
-        location: '',
-        tags: '',
-        status: 'Publié',
-    });
-
-    const handleChange = (key, value) => {
-        setForm({ ...form, [key]: value });
-    };
+    const { form, handleChange, handleSubmit } = useCreatePosts(onClose, imageUri);
 
     return (
         <View style={styles.container}>
@@ -30,8 +34,13 @@ function PostsForm() {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={{ flex: 1 }}
                 >
-                    <ScrollView contentContainerStyle={styles.content}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', width: '100%', marginTop: 45, height: 70, marginHorizontal: 20, gap: 30}}>
+                        <Pressable onPress={onClose} style={{ backgroundColor: 'white', paddingHorizontal: 7, paddingVertical: 7, borderRadius: 50,shadowColor: 'gray', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3,}}>
+                            <Ionicons name="arrow-back" color="black" size={30} />
+                        </Pressable>
                         <Text style={styles.title}>Ajouter un Projet</Text>
+                    </View>
+                    <ScrollView contentContainerStyle={styles.content}>
 
                         <CustomInput value={form.title} onChangeText={(text) => handleChange('title', text)} placeholder="Title of the project" />
                         <CustomInput value={form.description} onChangeText={(text) => handleChange('description', text)} placeholder="Description" multiline />
@@ -69,12 +78,13 @@ function PostsForm() {
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Publier</Text>
+                        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isLoading}>
+                            <Text style={styles.buttonText}>{isLoading ? 'Publishing...' : 'Publier'}</Text>
                         </TouchableOpacity>
                     </ScrollView>
                 </KeyboardAvoidingView>
             </LinearGradient>
+            <Toast />
         </View>
     );
 }
@@ -94,14 +104,13 @@ const styles = StyleSheet.create({
     content: {
         flexGrow: 1,
         paddingHorizontal: 20,
-        paddingVertical: 50,
+        paddingVertical: 20,
         alignItems: 'center',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#333',
-        marginBottom: 25,
     },
     imagePicker: {
         backgroundColor: '#77a6f7',

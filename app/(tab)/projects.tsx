@@ -9,7 +9,7 @@ const Projects = () => {
     const [postForm, setPostForm] = useState(false);
     return (
         postForm ? (
-                <PostsForm />
+                <PostsForm onClose={() => setPostForm(false)} />
             ) : (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <StatusBar translucent backgroundColor="transparent" />
