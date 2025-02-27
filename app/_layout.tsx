@@ -4,6 +4,7 @@ import Toast from "react-native-toast-message";
 import {toastConfig} from "@/app/CustomToast";
 
 export default function RootLayout() {
+
   return (
       <ReduxProvider>
           <Toast config={toastConfig} />
