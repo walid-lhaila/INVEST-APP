@@ -31,7 +31,7 @@ function ProjectRealizedForm({ toggleModal }) {
                 </TouchableOpacity>
 
                 {showStartDatePicker && (
-                    <DateTimePicker
+                    <DateTimePicker style={{marginLeft: 100, marginBottom: 10}}
                         value={new Date(formData.startDate)}
                         mode="date"
                         display="default"
@@ -47,7 +47,7 @@ function ProjectRealizedForm({ toggleModal }) {
                 </TouchableOpacity>
 
                 {showEndDatePicker && (
-                    <DateTimePicker
+                    <DateTimePicker style={{marginLeft: 100, marginBottom: 10}}
                         value={new Date(formData.endDate)}
                         mode="date"
                         display="default"
