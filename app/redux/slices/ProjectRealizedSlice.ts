@@ -14,12 +14,14 @@ interface ProjectData {
 
 interface ProjectState {
     project: null;
+    projects: [];
     isLoading: boolean;
     error: string | null;
 }
 
 const initialState: ProjectState = {
     project: null,
+    projects: [],
     isLoading: false,
     error: null,
 }
@@ -48,6 +50,28 @@ export const createProject = createAsyncThunk(
     }
 );
 
+export const getAllProjectsByUser = createAsyncThunk (
+    'project/getAllProjectByUser',
+    async(_, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/projects/getAll`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error?.response?.data?.message || 'Something Went Wrong');
+        }
+    }
+);
+
 
 const projectSlice = createSlice({
     name: 'project',
@@ -64,6 +88,20 @@ const projectSlice = createSlice({
                 state.project = action.payload;
             })
             .addCase(createProject.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(getAllProjectsByUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getAllProjectsByUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.projects = action.payload;
+            })
+            .addCase(getAllProjectsByUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })

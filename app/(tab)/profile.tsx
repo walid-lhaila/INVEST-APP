@@ -15,11 +15,16 @@ import Modal from "react-native-modal";
 import ProjectRealizedForm from "@/app/Components/ProjectRealizedForm";
 import useUser from "@/app/hooks/useUser";
 import {Toast} from "@/app/CustomToast";
+import useGetAllMyRealizedProject from "@/app/hooks/useGetAllMyRealizedProject";
 
 function Profile() {
     const [isModalVisible, setModalVisible] = useState(false);
     const { user, loading } = useUser();
+    const {projects, isLoading} = useGetAllMyRealizedProject();
     if(loading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
+    if(isLoading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
     const toggleModal = () => {
@@ -64,7 +69,11 @@ function Profile() {
 
 
                 <Text style={styles.sectionTitle}>Project Realized</Text>
-                <ProjectRealizedCard />
+                <View style={{paddingVertical: 10}}>
+                    {projects.map((project) => (
+                        <ProjectRealizedCard tags={project.tags} role={user.role} description={project.description} title={project.title} user={user.firstName} budget={project.budget} endDate={project.endDate} startDate={project.startDate} key={project._id} />
+                    ))}
+                </View>
             </ScrollView>
 
             <Modal
