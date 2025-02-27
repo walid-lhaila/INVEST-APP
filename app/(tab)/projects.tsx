@@ -5,12 +5,13 @@ import {LinearGradient} from "expo-linear-gradient";
 import PostsForm from "@/app/Components/PostsForm";
 import {Ionicons} from "@expo/vector-icons";
 import useGetAllPostsByUser from "@/app/hooks/useGetAllPostsByUser";
+import useDeletePosts from "@/app/hooks/useDeletePosts";
+import {Toast} from "@/app/CustomToast";
 
 const Projects = () => {
     const [postForm, setPostForm] = useState(false);
     const {userPosts, isLoading} = useGetAllPostsByUser();
-
-    console.log(userPosts);
+    const {handleDelete} = useDeletePosts();
 
     if (isLoading) {
         return <ActivityIndicator size="large" color="#77a6f7" style={styles.loader} />;
@@ -29,11 +30,12 @@ const Projects = () => {
                         <Text style={styles.header}>My Projects</Text>
                         <ScrollView contentContainerStyle={styles.projectList}>
                             {userPosts.map((post) => (
-                                <UserPostCard key={post._id} title={post.title} description={post.description} category={post.category} location={post.location} currentInvestment={post.currentInvestment} investmentGoal={post.investmentGoal} entrepreneur={post.entrepreneur}/>
+                                <UserPostCard onDelete={() => handleDelete(post._id) } key={post._id} title={post.title} description={post.description} category={post.category} location={post.location} currentInvestment={post.currentInvestment} investmentGoal={post.investmentGoal} entrepreneur={post.entrepreneur} createdAt={post.createdAt}/>
                             ))}
                         </ScrollView>
                     </View>
                 </LinearGradient>
+                <Toast />
             </View>
             )
     );

@@ -93,10 +93,32 @@ export const getAllPostsByUser = createAsyncThunk(
                     },
                 }
             );
-            console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+        }
+    }
+);
+
+
+export const deletePost = createAsyncThunk(
+    'posts/deletePost',
+    async(postId: string, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken){
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_BACKEND_URL}/posts/delete/${postId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return postId;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
     }
 );
@@ -146,6 +168,21 @@ const postSlice = createSlice({
                 state.userPosts = action.payload;
             })
             .addCase(getAllPostsByUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(deletePost.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(deletePost.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.posts = state.posts.filter((post) => post._id === action.payload);
+                state.userPosts = state.userPosts.filter((post) => post._id !== action.payload);
+            })
+            .addCase(deletePost.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
