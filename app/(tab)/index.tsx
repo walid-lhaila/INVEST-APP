@@ -42,7 +42,7 @@ function Index() {
                                     currentInvestment={post.currentInvestment}
                                     investmentGoal={post.investmentGoal}
                                     entrepreneur={post.entrepreneur}
-                                    category={post.category}
+                                    category={post.category} createdAt={post.createdAt}
                                 />
                             ))}
                         </ScrollView>
