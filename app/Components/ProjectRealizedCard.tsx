@@ -2,26 +2,36 @@ import React from 'react';
 import {ImageBackground, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
+import useProjectDuration from "@/app/Components/useProjectDuration";
 
-function ProjectRealizedCard() {
+interface ProjectRealizedProps {
+    title: string;
+    description: string;
+    budget: number;
+    startDate: Date;
+    endDate: Date;
+    tags: string;
+    user: string;
+    role: string
+}
+function ProjectRealizedCard({title, description, budget, startDate, endDate, tags, user, role}: ProjectRealizedProps) {
+    const truncateTitle = title.length > 14 ? title.substring(0, 21) + '...' : title;
+    const {duration} = useProjectDuration();
     return (
-        <View style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
+        <View style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, marginTop: 10, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10}}>
-                <Text style={{fontWeight: 900, fontSize: 20}}>UI/UX Designer</Text>
-                <Text style={{fontWeight: 800, fontSize: 18, color: '#77a6f7'}}>$20000</Text>
+                <Text style={{fontWeight: 900, fontSize: 20}}>{truncateTitle}</Text>
+                <Text style={{fontWeight: 800, fontSize: 18, color: '#77a6f7'}}>${budget}</Text>
             </View>
-            <Text style={{paddingHorizontal: 10, fontSize: 14, fontWeight: 400, color: 'gray'}}>An exciting new investment opportunity in Industrie.</Text>
+            <Text style={{paddingHorizontal: 10, fontSize: 14, fontWeight: 400, color: 'gray'}}>{description}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',  paddingHorizontal: 10,}}>
                 <View style={{flexDirection: 'row', gap: 8, paddingVertical: 10}}>
                     <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13}}>
-                        <Text style={{fontWeight: 600, fontSize: 13}}>Industrie</Text>
-                    </View>
-                    <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13}}>
-                        <Text style={{fontWeight: 600, fontSize: 13}}>IA</Text>
+                        <Text style={{fontWeight: 600, fontSize: 13}}>{tags}</Text>
                     </View>
                 </View>
                 <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13}}>
-                    <Text style={{fontWeight: 600, fontSize: 13}}>3 Years</Text>
+                    <Text style={{fontWeight: 600, fontSize: 13}}>{duration(startDate, endDate)}</Text>
                 </View>
             </View>
             <View style={{ flexDirection: "row", justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingBottom: 10}}>
@@ -35,10 +45,10 @@ function ProjectRealizedCard() {
                     </View>
 
                     <View>
-                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>Walid Lhaila</Text>
+                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>{user}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10}}>
                             <Ionicons name={"briefcase-outline"} size={13} color={"#77a6f7"} />
-                            <Text style={{color: 'gray', fontSize: 14, fontWeight: 300, fontFamily: "serif"}}>Entrepreneur</Text>
+                            <Text style={{color: 'gray', fontSize: 14, fontWeight: 300, fontFamily: "serif"}}>{role}</Text>
                         </View>
                     </View>
                 </View>
