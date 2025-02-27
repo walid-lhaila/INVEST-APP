@@ -10,7 +10,6 @@ import useGetAllPosts from "@/app/hooks/useGetAllPosts";
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
-
     const {posts, isLoading} = useGetAllPosts();
 
     const openPostDetails = (post) => {
@@ -43,7 +42,7 @@ function Index() {
                                     currentInvestment={post.currentInvestment}
                                     investmentGoal={post.investmentGoal}
                                     entrepreneur={post.entrepreneur}
-                                    category={post.category}
+                                    category={post.category} createdAt={post.createdAt}
                                 />
                             ))}
                         </ScrollView>

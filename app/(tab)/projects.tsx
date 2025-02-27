@@ -1,12 +1,21 @@
 import React, {useState} from 'react';
-import {ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import UserPostCard from "@/app/Components/UserPostCard";
 import {LinearGradient} from "expo-linear-gradient";
 import PostsForm from "@/app/Components/PostsForm";
 import {Ionicons} from "@expo/vector-icons";
+import useGetAllPostsByUser from "@/app/hooks/useGetAllPostsByUser";
+import useDeletePosts from "@/app/hooks/useDeletePosts";
+import {Toast} from "@/app/CustomToast";
 
 const Projects = () => {
     const [postForm, setPostForm] = useState(false);
+    const {userPosts, isLoading} = useGetAllPostsByUser();
+    const {handleDelete} = useDeletePosts();
+
+    if (isLoading) {
+        return <ActivityIndicator size="large" color="#77a6f7" style={styles.loader} />;
+    }
     return (
         postForm ? (
                 <PostsForm onClose={() => setPostForm(false)} />
@@ -20,18 +29,13 @@ const Projects = () => {
                         </TouchableOpacity>
                         <Text style={styles.header}>My Projects</Text>
                         <ScrollView contentContainerStyle={styles.projectList}>
-                            <UserPostCard
-                                title="New Investment in IA"
-                                description="An exciting new investment opportunity in IA."
-                                category="Technologie"
-                                location="London"
-                                currentInvestment="2000"
-                                investmentGoal="500000"
-                                entrepreneur="Walid Lhaila"
-                            />
+                            {userPosts.map((post) => (
+                                <UserPostCard onDelete={() => handleDelete(post._id) } key={post._id} title={post.title} description={post.description} category={post.category} location={post.location} currentInvestment={post.currentInvestment} investmentGoal={post.investmentGoal} entrepreneur={post.entrepreneur} createdAt={post.createdAt}/>
+                            ))}
                         </ScrollView>
                     </View>
                 </LinearGradient>
+                <Toast />
             </View>
             )
     );
@@ -80,5 +84,10 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         width: 50,
         elevation: 5,
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
