@@ -9,66 +9,57 @@ import {
     View
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import useCreateRealizedProject from "@/app/hooks/useCreateRealizedProject";
 
 function ProjectRealizedForm({ toggleModal }) {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const { handleChange, handleCreateProject, formData } = useCreateRealizedProject();
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
-    const onChangeStartDate = (event, selectedDate) => {
-        setShowStartDatePicker(Platform.OS === 'ios');
-        if (selectedDate) {
-            setStartDate(selectedDate);
-        }
-    };
-
-    const onChangeEndDate = (event, selectedDate) => {
-        setShowEndDatePicker(Platform.OS === 'ios');
-        if (selectedDate) {
-            setEndDate(selectedDate);
-        }
-    };
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Add New Project</Text>
 
-                <TextInput style={styles.input} placeholder="Title" placeholderTextColor="#888"/>
-                <TextInput style={styles.input} placeholder="Description" placeholderTextColor="#888" multiline/>
-                <TextInput style={styles.input} placeholder="Budget" placeholderTextColor="#888" keyboardType="numeric"/>
-                <TextInput style={styles.input} placeholder="Tags (comma separated)" placeholderTextColor="#888"/>
+                <TextInput style={styles.input} placeholder="Title" placeholderTextColor="#888" value={formData.title} onChangeText={(text) => handleChange('title', text)}/>
+                <TextInput style={styles.input} placeholder="Description" placeholderTextColor="#888" value={formData.description} onChangeText={(text) => handleChange('description', text)} multiline/>
+                <TextInput style={styles.input} placeholder="Budget" placeholderTextColor="#888" keyboardType="numeric" value={formData.budget} onChangeText={(text) => handleChange('budget', text)}/>
+                <TextInput style={styles.input} placeholder="Tags (comma separated)" placeholderTextColor="#888" value={formData.tags} onChangeText={(text) => handleChange('tags', text)}/>
 
                 <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.datePicker}>
-                    <Text style={styles.dateText}>Start Date: {startDate.toDateString()}</Text>
+                    <Text style={styles.dateText}>Start Date: {new Date(formData.startDate).toDateString()}</Text>
                 </TouchableOpacity>
 
                 {showStartDatePicker && (
                     <DateTimePicker
-                        style={{marginLeft: 100, marginBottom: 10}}
-                        value={startDate}
+                        value={new Date(formData.startDate)}
                         mode="date"
                         display="default"
-                        onChange={onChangeStartDate}
+                        onChange={(event, selectedDate) => {
+                            setShowStartDatePicker(false);
+                            if (selectedDate) handleChange("startDate", selectedDate);
+                        }}
                     />
                 )}
 
                 <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.datePicker}>
-                    <Text style={styles.dateText}>End Date: {endDate.toDateString()}</Text>
+                    <Text style={styles.dateText}>End Date: {new Date(formData.endDate).toDateString()}</Text>
                 </TouchableOpacity>
 
                 {showEndDatePicker && (
                     <DateTimePicker
-                        style={{marginLeft: 100, marginBottom: 10}}
-                        value={endDate}
+                        value={new Date(formData.endDate)}
                         mode="date"
                         display="default"
-                        onChange={onChangeEndDate}
+                        onChange={(event, selectedDate) => {
+                            setShowEndDatePicker(false);
+                            if (selectedDate) handleChange("endDate", selectedDate);
+                        }}
                     />
                 )}
 
-                <TouchableOpacity style={styles.submitButton} onPress={toggleModal}>
+
+                <TouchableOpacity style={styles.submitButton} onPress={() => handleCreateProject(toggleModal)}>
                     <Text style={styles.submitText}>Submit</Text>
                 </TouchableOpacity>
             </View>

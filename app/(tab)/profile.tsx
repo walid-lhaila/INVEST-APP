@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import ProjectRealizedForm from "@/app/Components/ProjectRealizedForm";
 import useUser from "@/app/hooks/useUser";
+import {Toast} from "@/app/CustomToast";
 
 function Profile() {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -73,6 +74,7 @@ function Profile() {
             >
                 <ProjectRealizedForm toggleModal={toggleModal} />
             </Modal>
+            <Toast />
         </View>
     );
 }
