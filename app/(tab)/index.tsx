@@ -63,6 +63,7 @@ function Index() {
                     category={selectedPost.category}
                     src={selectedPost.imageUrl}
                     status={selectedPost.status}
+                    tags={selectedPost.tags}
                 />
             )}
         </View>
