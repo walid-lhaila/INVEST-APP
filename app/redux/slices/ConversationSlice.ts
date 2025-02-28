@@ -66,7 +66,11 @@ export const fetchConversationMessages = createAsyncThunk(
 const conversationSlice = createSlice({
     name: 'conversation',
     initialState,
-    reducers: {},
+    reducers: {
+        addMessage: (state, action) => {
+            state.messages.push(action.payload);
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllConversationByUser.pending, (state) => {
@@ -97,4 +101,5 @@ const conversationSlice = createSlice({
     },
 });
 
+export const { addMessage } = conversationSlice.actions;
 export default conversationSlice.reducer;
