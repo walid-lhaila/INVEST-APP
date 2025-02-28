@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     ScrollView,
     StatusBar,
@@ -14,27 +14,25 @@ import ChatHeader from "@/app/Components/ChatHeader";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchConversationMessages} from "@/app/redux/slices/ConversationSlice";
+import {addMessage, fetchConversationMessages} from "@/app/redux/slices/ConversationSlice";
 import useUser from "@/app/hooks/useUser";
+import {getSocket} from "@/app/services/socket";
+import useFetchMessages from "@/app/hooks/useFetchMessages";
+import useWebSocketMessages from "@/app/hooks/useWebSocketMessages";
+import useSendMessage from "@/app/hooks/useSendMessage";
 
 function ChatComponent() {
     const { conversationId } = useLocalSearchParams();
-    const dispatch = useDispatch();
-    const { messages, isLoading } = useSelector((state) => state.conversation);
     const {user, loading} = useUser();
+    const [messageContent, setMessageContent] = useState('');
     const Router = useRouter();
-
-    useEffect(() => {
-        if(conversationId) {
-            dispatch(fetchConversationMessages(conversationId));
-        }
-    }, [dispatch, conversationId]);
-
-    if(isLoading || loading) {
+    const { messages, isLoading } = useFetchMessages(conversationId);
+    useWebSocketMessages();
+    const otherUser = messages.find(msg => msg.senderUsername !== user?.username)?.senderUsername || "Unknown";
+    const handleSendMessage = useSendMessage(user, otherUser);
+    if(isLoading || loading || !user) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
-    const otherUser = messages.find(msg => msg.senderUsername !== user.username)?.senderUsername || "Unknown";
-
 
     return (
         <View style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
@@ -42,7 +40,7 @@ function ChatComponent() {
             <ChatHeader onPress={() => Router.push("/(tab)/chat")} name={otherUser} status='Online' />
 
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15 }}>
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15, marginBottom: 20 }}>
                     {messages.map((message, index) => (
                         <View key={index} style={message.senderUsername === user.username ? styles.sender : styles.receiver}>
                             <Text style={message.senderUsername === user.username ? styles.messageSender : styles.message}>
@@ -56,8 +54,8 @@ function ChatComponent() {
                 </ScrollView>
 
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Écrire un message..." placeholderTextColor="#999" />
-                    <TouchableOpacity style={styles.sendButton}>
+                    <TextInput style={styles.input} placeholder="Écrire un message..." placeholderTextColor="#999" value={messageContent} onChangeText={setMessageContent} />
+                    <TouchableOpacity style={styles.sendButton} onPress={() => {handleSendMessage(messageContent); setMessageContent('')}}>
                         <Ionicons name="send" size={24} color="white" />
                     </TouchableOpacity>
                 </View>

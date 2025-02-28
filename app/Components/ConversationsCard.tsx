@@ -18,7 +18,9 @@ function ConversationsCard({ conversation, onPress }: ConversationsCardProps) {
     const unreadMessagesFromOtherUser = conversation.messages.filter(
         (msg) => msg.senderUsername === otherUser && !msg.isRead
     );
-    const lastUnreadMessageFromOtherUser = unreadMessagesFromOtherUser.length > 0 ? unreadMessagesFromOtherUser[unreadMessagesFromOtherUser.length - 1].content : null;
+    const lastMessage = conversation.messages.length > 0
+        ? conversation.messages[conversation.messages.length - 1].content
+        : '';
 
     return (
         <Pressable onPress={onPress} style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: '#9c9c9c', borderWidth: 1, borderBottomWidth: 1, borderLeftWidth: 0, borderRightWidth: 0, borderTopWidth: 0,}}>
@@ -32,7 +34,7 @@ function ConversationsCard({ conversation, onPress }: ConversationsCardProps) {
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10,}}>
                         <Text style={{ color: '#717171', fontSize: 14, fontWeight: '300', fontFamily: 'serif' }}>
-                            {lastUnreadMessageFromOtherUser || conversation.messages[conversation.messages.length - 1].content}
+                            {lastMessage}
                         </Text>
                     </View>
                 </View>
