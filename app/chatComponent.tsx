@@ -41,21 +41,10 @@ function ChatComponent() {
             <StatusBar translucent backgroundColor="transparent" />
             <ChatHeader onPress={() => Router.push("/(tab)/chat")} name={otherUser} status='Online' />
 
-            <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    nestedScrollEnabled={true}
-                    style={{ paddingHorizontal: 15 }}
-                >
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15 }}>
                     {messages.map((message, index) => (
-                        <View
-                            key={index}
-                            style={message.senderUsername === user.username ? styles.sender : styles.receiver}
-                        >
+                        <View key={index} style={message.senderUsername === user.username ? styles.sender : styles.receiver}>
                             <Text style={message.senderUsername === user.username ? styles.messageSender : styles.message}>
                                 {message.content}
                             </Text>
