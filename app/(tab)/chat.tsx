@@ -1,12 +1,17 @@
 import React from 'react';
-import {ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
+import {ActivityIndicator, ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
 import ChatSearch from "@/app/Components/ChatSearch";
 import ConversationsCard from "@/app/Components/ConversationsCard";
 import {useRouter} from "expo-router";
+import useGetAllConversations from "@/app/hooks/useGetAllConversations";
 
 function Chat() {
+    const {conversations, isLoading} = useGetAllConversations();
     const Router = useRouter()
+    if(isLoading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -19,11 +24,9 @@ function Chat() {
                 <View style={styles.content}>
                     <Text style={{ marginTop: 20, color: 'black', fontWeight: 700,}}>ALL MESSAGES</Text>
                     <ScrollView  showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ marginTop: 10}}>
-                        <ConversationsCard onPress={() => Router.push("/chatComponent")} name="Walid Lhaila" count="2" message="Hello, How Are You" time='08:25' />
-                        <ConversationsCard onPress={() => Router.push("/chatComponent")} name="Ahmed Hounati" count="3" message="Hello, How Are You" time='08:25' />
-                        <ConversationsCard onPress={() => Router.push("/chatComponent")} name="Brahim Ouborrih" count="1" message="Hello, How Are You" time='08:25' />
-                        <ConversationsCard onPress={() => Router.push("/chatComponent")} name="Imad Esaghir" count="4" message="Hello, How Are You" time='08:25' />
-                        <ConversationsCard onPress={() => Router.push("/chatComponent")} name="Mohamed Joual" count="4" message="Hello, How Are You" time='08:25' />
+                        {conversations.map((conversation) => (
+                                <ConversationsCard key={conversation._id} onPress={() => Router.push({ pathname: "/chatComponent", params: { conversationId: conversation._id }})} conversation={conversation}/>
+                        ))}
                     </ScrollView>
                 </View>
         </View>
