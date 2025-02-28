@@ -16,6 +16,7 @@ import {LinearGradient} from "expo-linear-gradient";
 import {Ionicons} from "@expo/vector-icons";
 import useRegister from "@/app/hooks/useRegister";
 import Toast from "react-native-toast-message";
+import FocusedInput from "@/app/Components/FocusedInput";
 
 
 const { width } = Dimensions.get("window")
@@ -33,6 +34,7 @@ function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Inv
                     <Text style={styles.text}>Create Account as Entrepreneur</Text>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
                         <View style={{ width: '100%'}}>
+                            <FocusedInput>
                             <Input placeHolder="First Name" iconName="person-outline" onChangeText={(text) => handleChange('firstName', text)}  />
                             <Input placeHolder="Last Name" iconName="person-outline" onChangeText={(text) => handleChange('lastName', text)} />
                             <Input placeHolder="Username" iconName="person-circle-outline" onChangeText={(text) => handleChange('username', text)} />
@@ -43,6 +45,7 @@ function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Inv
                             <Input placeHolder="Description" iconName="document-text-outline" onChangeText={(text) => handleChange('companyDescription', text)} />
                             <Input placeHolder="Email Address" iconName="mail-outline" onChangeText={(text) => handleChange('email', text)} />
                             <Input placeHolder="Password" iconName="key-outline" onChangeText={(text) => handleChange('password', text)} />
+                            </FocusedInput>
                             <View style={{ display: 'none' }}>
                                 <Input value={formData.role} editable={false} />
                             </View>
