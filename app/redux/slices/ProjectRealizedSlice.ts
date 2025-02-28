@@ -72,6 +72,28 @@ export const getAllProjectsByUser = createAsyncThunk (
     }
 );
 
+export const deleteProject = createAsyncThunk(
+    'project/deleteProject',
+    async (projectId: string, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization is missing');
+            }
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_BACKEND_URL}/projects/delete/${projectId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return projectId;
+        } catch (error) {
+            return rejectWithValue(error?.response?.date?.message || "Something Went Wrong");
+        }
+    }
+);
+
 
 const projectSlice = createSlice({
     name: 'project',
@@ -102,6 +124,20 @@ const projectSlice = createSlice({
                 state.projects = action.payload;
             })
             .addCase(getAllProjectsByUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(deleteProject.pending, (state) => {
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(deleteProject.fulfilled, (state, action) => {
+                state.isLoading = true;
+                state.projects = state.projects.filter((project) => project._id !== action.payload);
+            })
+            .addCase(deleteProject.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })

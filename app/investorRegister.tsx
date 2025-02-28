@@ -16,6 +16,7 @@ import {LinearGradient} from "expo-linear-gradient";
 import {Ionicons} from "@expo/vector-icons";
 import useRegister from "@/app/hooks/useRegister";
 import Toast from "react-native-toast-message";
+import FocusedInput from "@/app/Components/FocusedInput";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -33,17 +34,20 @@ function InvestorRegister({ role = "Investor" }: { role: "Investor" | "Entrepren
                     <Text style={styles.text}>Create Account as Investor</Text>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
                         <View style={{ width: '100%'}}>
-                            <Input placeHolder="First Name" iconName="person-outline" onChangeText={(text) => handleChange('firstName', text)}  />
-                            <Input placeHolder="Last Name" iconName="person-outline" onChangeText={(text) => handleChange('lastName', text)} />
-                            <Input placeHolder="Username" iconName="person-circle-outline" onChangeText={(text) => handleChange('username', text)} />
-                            <Input placeHolder="Phone Number" iconName="call-outline" onChangeText={(text) => handleChange('phone', text)} />
-                            <Input placeHolder="Interest" iconName="bulb-outline" onChangeText={(text) => handleChange('fieldOfInterest', text)} />
-                            <Input placeHolder="Services" iconName="construct-outline" onChangeText={(text) => handleChange('services', text)} />
-                            <Input placeHolder="Email Address" iconName="mail-outline" onChangeText={(text) => handleChange('email', text)} />
-                            <Input placeHolder="Password" iconName="key-outline" onChangeText={(text) => handleChange('password', text)} />
+                            <FocusedInput >
+                                <Input placeHolder="First Name" iconName="person-outline" onChangeText={(text) => handleChange('firstName', text)}  />
+                                <Input placeHolder="Last Name" iconName="person-outline" onChangeText={(text) => handleChange('lastName', text)} />
+                                <Input placeHolder="Username" iconName="person-circle-outline" onChangeText={(text) => handleChange('username', text)} />
+                                <Input placeHolder="Phone Number" iconName="call-outline" onChangeText={(text) => handleChange('phone', text)} />
+                                <Input placeHolder="Interest" iconName="bulb-outline" onChangeText={(text) => handleChange('fieldOfInterest', text)} />
+                                <Input placeHolder="Services" iconName="construct-outline" onChangeText={(text) => handleChange('services', text)} />
+                                <Input placeHolder="Email Address" iconName="mail-outline" onChangeText={(text) => handleChange('email', text)} />
+                                <Input placeHolder="Password" iconName="key-outline" onChangeText={(text) => handleChange('password', text)} />
+                            </FocusedInput>
                             <View style={{ display: 'none' }}>
                                 <Input value={formData.role} editable={false} />
                             </View>
+
                             <Pressable onPress={handleRegister} style={{ flexDirection: 'row', gap: 10, paddingTop: 50, justifyContent: 'flex-end', alignItems: 'center'}}>
                                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Sign Up</Text>
                                 <LinearGradient colors={['#77a6f7', '#D3E3FC']} style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}} >

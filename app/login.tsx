@@ -16,6 +16,7 @@ import Input from "@/app/Components/Input"
 import useLogin from "@/app/hooks/useLogin";
 import {useRouter} from "expo-router";
 import {Toast} from "@/app/CustomToast";
+import FocusedInput from "@/app/Components/FocusedInput";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -24,6 +25,7 @@ function Login() {
     const Router = useRouter();
     const { handleLogin, setUsername, setPassword, isLoading } = useLogin();
 
+    // @ts-ignore
     return (
         <View style={styles.container}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -34,8 +36,13 @@ function Login() {
                         <Text style={styles.text}>Hello</Text>
                         <Text style={styles.subText}>Sign in to your account</Text>
                         <View style={styles.inputContainer}>
-                            <Input placeHolder="Username" iconName="person" onChangeText={setUsername} />
-                            <Input placeHolder="Password" iconName="lock-closed" onChangeText={setPassword} />
+                            <FocusedInput >
+                                <Input placeHolder="Username" iconName="person" onChangeText={setUsername}   />
+                                <Input placeHolder="Password" iconName="lock-closed" onChangeText={setPassword} />
+
+                            </FocusedInput>
+
+
                             <Text style={styles.forgotPassword}>Forgot your password ?</Text>
                             <Pressable onPress={handleLogin} style={styles.signInContainer} disabled={isLoading}>
                                 <Text style={styles.signInText}>Sign In</Text>
