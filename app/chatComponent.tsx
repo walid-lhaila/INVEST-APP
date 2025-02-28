@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     ScrollView,
     StatusBar,
@@ -8,19 +8,38 @@ import {
     View,
     KeyboardAvoidingView,
     Platform,
-    TouchableOpacity
+    TouchableOpacity, ActivityIndicator
 } from "react-native";
 import ChatHeader from "@/app/Components/ChatHeader";
-import { useRouter } from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchConversationMessages} from "@/app/redux/slices/ConversationSlice";
+import useUser from "@/app/hooks/useUser";
 
 function ChatComponent() {
+    const { conversationId } = useLocalSearchParams();
+    const dispatch = useDispatch();
+    const { messages, isLoading } = useSelector((state) => state.conversation);
+    const {user, loading} = useUser();
     const Router = useRouter();
+
+    useEffect(() => {
+        if(conversationId) {
+            dispatch(fetchConversationMessages(conversationId));
+        }
+    }, [dispatch, conversationId]);
+
+    if(isLoading || loading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
+    const otherUser = messages.find(msg => msg.senderUsername !== user.username)?.senderUsername || "Unknown";
+
 
     return (
         <View style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
             <StatusBar translucent backgroundColor="transparent" />
-            <ChatHeader onPress={() => Router.push("/(tab)/chat")} name='Walid Lhaila' status='Online' />
+            <ChatHeader onPress={() => Router.push("/(tab)/chat")} name={otherUser} status='Online' />
 
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
@@ -32,26 +51,19 @@ function ChatComponent() {
                     nestedScrollEnabled={true}
                     style={{ paddingHorizontal: 15 }}
                 >
-                    <View style={styles.receiver}>
-                        <Text style={styles.message}>Salut, comment ça va ?</Text>
-                        <Text style={styles.time}>10:30</Text>
-                    </View>
-                    <View style={styles.sender}>
-                        <Text style={styles.messageSender}>Ça va bien, merci ! Et toi ?</Text>
-                        <Text style={styles.timeSender}>10:32</Text>
-                    </View>
-                    <View style={styles.sender}>
-                        <Text style={styles.messageSender}>Tu regardes quoi en ce moment ?</Text>
-                        <Text style={styles.timeSender}>10:35</Text>
-                    </View>
-                    <View style={styles.receiver}>
-                        <Text style={styles.message}>Le film "Inception", il est top !</Text>
-                        <Text style={styles.time}>10:37</Text>
-                    </View>
-                    <View style={styles.sender}>
-                        <Text style={styles.messageSender}>Oui, un classique !</Text>
-                        <Text style={styles.timeSender}>10:40</Text>
-                    </View>
+                    {messages.map((message, index) => (
+                        <View
+                            key={index}
+                            style={message.senderUsername === user.username ? styles.sender : styles.receiver}
+                        >
+                            <Text style={message.senderUsername === user.username ? styles.messageSender : styles.message}>
+                                {message.content}
+                            </Text>
+                            <Text style={message.senderUsername === user.username ? styles.timeSender : styles.time}>
+                                {new Date(message.timestamp).toLocaleTimeString()}
+                            </Text>
+                        </View>
+                    ))}
                 </ScrollView>
 
                 <View style={styles.inputContainer}>
