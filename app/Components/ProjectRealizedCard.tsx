@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from "react-native";
+import {ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 import useProjectDuration from "@/app/Components/useProjectDuration";
@@ -13,8 +13,9 @@ interface ProjectRealizedProps {
     tags: string;
     user: string;
     role: string
+    onDelete: () => void;
 }
-function ProjectRealizedCard({title, description, budget, startDate, endDate, tags, user, role}: ProjectRealizedProps) {
+function ProjectRealizedCard({title, description, budget, startDate, endDate, tags, user, role, onDelete}: ProjectRealizedProps) {
     const truncateTitle = title.length > 14 ? title.substring(0, 21) + '...' : title;
     const {duration} = useProjectDuration();
     return (
@@ -52,14 +53,15 @@ function ProjectRealizedCard({title, description, budget, startDate, endDate, ta
                         </View>
                     </View>
                 </View>
+                    <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                        <Ionicons name="trash-outline" size={20} color="white" />
+                    </TouchableOpacity>
             </View>
         </View>
     );
 }
 
 export default ProjectRealizedCard;
-
-
 
 const styles = StyleSheet.create({
     profileContainer: {
@@ -79,6 +81,11 @@ const styles = StyleSheet.create({
         height: 30,
         borderRadius: 25,
         overflow: 'hidden',
+    },
+    deleteButton: {
+        backgroundColor: 'red',
+        padding: 8,
+        borderRadius: 10,
     },
 
 });
