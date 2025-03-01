@@ -9,7 +9,6 @@ export default function TabLayout() {
         const initSocket = async () => {
             try {
                 const token = await AsyncStorage.getItem("token");
-                console.log("Token récupéré :", token);
 
                 if (token) {
                     initializeSocket(token);
