@@ -5,23 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {initializeSocket} from "@/app/services/socket";
 
 export default function TabLayout() {
-    useEffect(() => {
-        const initSocket = async () => {
-            try {
-                const token = await AsyncStorage.getItem("token");
-
-                if (token) {
-                    initializeSocket(token);
-                } else {
-                    console.warn("Aucun token trouvé, la connexion WebSocket ne sera pas établie.");
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération du token :", error);
-            }
-        };
-
-        initSocket();
-    }, []);
 
     return (
         <Tabs
