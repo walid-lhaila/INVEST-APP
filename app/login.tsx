@@ -17,6 +17,9 @@ import useLogin from "@/app/hooks/useLogin";
 import {useRouter} from "expo-router";
 import {Toast} from "@/app/CustomToast";
 import FocusedInput from "@/app/Components/FocusedInput";
+import {useEffect} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {initializeSocket} from "@/app/services/socket";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -24,8 +27,24 @@ const { height } = Dimensions.get("screen")
 function Login() {
     const Router = useRouter();
     const { handleLogin, setUsername, setPassword, isLoading } = useLogin();
+    useEffect(() => {
+        const initSocket = async () => {
+            try {
+                const token = await AsyncStorage.getItem("token");
 
-    // @ts-ignore
+                if (token) {
+                    initializeSocket(token);
+                } else {
+                    console.warn("Aucun token trouvé, la connexion WebSocket ne sera pas établie.");
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération du token :", error);
+            }
+        };
+
+        initSocket();
+    }, []);
+
     return (
         <View style={styles.container}>
             <StatusBar translucent backgroundColor="transparent" />
