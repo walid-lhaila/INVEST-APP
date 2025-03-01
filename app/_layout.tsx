@@ -12,6 +12,7 @@ export default function RootLayout() {
               <Stack.Screen  name="(tab)" options={{ headerShown: false }} />
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="chatComponent" options={{ headerShown: false }} />
+              <Stack.Screen name="usersProfile" options={{ headerShown: false }} />
               <Stack.Screen name="registerSelect" options={{ headerShown: false }} />
               <Stack.Screen name="login" options={{ headerShown: false }} />
               <Stack.Screen name="investorRegister" options={{ headerShown: false }} />
