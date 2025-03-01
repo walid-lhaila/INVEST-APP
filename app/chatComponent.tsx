@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     ScrollView,
     StatusBar,
@@ -20,6 +20,7 @@ import {getSocket} from "@/app/services/socket";
 import useFetchMessages from "@/app/hooks/useFetchMessages";
 import useWebSocketMessages from "@/app/hooks/useWebSocketMessages";
 import useSendMessage from "@/app/hooks/useSendMessage";
+import useAutoScroll from "@/app/hooks/useAutoScroll";
 
 function ChatComponent() {
     const { conversationId } = useLocalSearchParams();
@@ -30,6 +31,7 @@ function ChatComponent() {
     useWebSocketMessages();
     const otherUser = messages.find(msg => msg.senderUsername !== user?.username)?.senderUsername || "Unknown";
     const handleSendMessage = useSendMessage(user, otherUser);
+    const scrollViewRef = useAutoScroll([messages]);
     if(isLoading || loading || !user) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
@@ -40,7 +42,7 @@ function ChatComponent() {
             <ChatHeader onPress={() => Router.push("/(tab)/chat")} name={otherUser} status='Online' />
 
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15, marginBottom: 20 }}>
+                <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15, marginBottom: 20 }}>
                     {messages.map((message, index) => (
                         <View key={index} style={message.senderUsername === user.username ? styles.sender : styles.receiver}>
                             <Text style={message.senderUsername === user.username ? styles.messageSender : styles.message}>
@@ -55,7 +57,7 @@ function ChatComponent() {
 
                 <View style={styles.inputContainer}>
                     <TextInput style={styles.input} placeholder="Écrire un message..." placeholderTextColor="#999" value={messageContent} onChangeText={setMessageContent} />
-                    <TouchableOpacity style={styles.sendButton} onPress={() => {handleSendMessage(messageContent); setMessageContent('')}}>
+                    <TouchableOpacity style={styles.sendButton} onPress={() => {handleSendMessage(messageContent); setMessageContent('');setTimeout(() => {if (scrollViewRef.current) {scrollViewRef.current.scrollToEnd({ animated: true });}}, 100);}}>
                         <Ionicons name="send" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
