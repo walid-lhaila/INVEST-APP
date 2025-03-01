@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     ScrollView,
     ImageBackground,
-    ActivityIndicator,
+    ActivityIndicator, Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -27,10 +27,11 @@ interface PostDetailsProps {
     status: string;
     entrepreneur: string;
     onClose: () => void;
+    onUserDetails: () => void;
     visible: boolean;
 }
 
-function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags}: PostDetailsProps) {
+function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags, onUserDetails}: PostDetailsProps) {
     const Router = useRouter();
     const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
     const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
@@ -117,7 +118,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                 <Text style={styles.error}>Error: {error}</Text>
                             ) : user ? (
                                 <>
-                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                                    <Pressable onPress={onUserDetails} style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
                                         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 10 }}>
                                             <View style={styles.profileContainer}>
                                                 <ImageBackground style={styles.profileImage} source={profile} resizeMode="cover"/>
@@ -133,7 +134,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                                 </View>
                                             </View>
                                         </View>
-                                    </View>
+                                    </Pressable>
                                     <Text style={styles.qualification}>• (+212) {user.phone}</Text>
                                     <Text style={styles.qualification}>• {user.email}</Text>
                                 </>

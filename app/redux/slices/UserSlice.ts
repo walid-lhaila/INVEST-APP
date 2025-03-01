@@ -22,7 +22,7 @@ export const fetchUserByUsername = createAsyncThunk(
             });
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
+            return rejectWithValue(error?.response?.data?.message || 'Failed to fetch user');
         }
     }
 );

@@ -6,11 +6,13 @@ import SearchBar from "@/app/Components/SearchBar";
 import PostCard from "@/app/Components/PostCard";
 import PostDetails from "@/app/Components/PostDetails";
 import useGetAllPosts from "@/app/hooks/useGetAllPosts";
+import {useRouter} from "expo-router";
 
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const {posts, isLoading} = useGetAllPosts();
+    const Router = useRouter();
 
     const openPostDetails = (post) => {
         setSelectedPost(post);
@@ -51,6 +53,7 @@ function Index() {
             )}
             {selectedPost && (
                 <PostDetails
+                    onUserDetails={() => Router.push({ pathname: "/usersProfile", params: {username: selectedPost.entrepreneur}})}
                     visible={modalVisible}
                     onClose={() => setModalVisible(false)}
                     title={selectedPost.title}
