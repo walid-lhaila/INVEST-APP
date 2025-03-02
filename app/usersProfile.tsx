@@ -1,18 +1,19 @@
 import React, {useEffect} from 'react';
-import {ActivityIndicator, ImageBackground, ScrollView, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import ProjectRealizedCard from "@/app/Components/ProjectRealizedCard";
-import {useLocalSearchParams} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import useGetUserByUsername from "@/app/hooks/useGetUserByUsername";
 import {useDispatch, useSelector} from "react-redux";
 import {getProjectByUsername} from "@/app/redux/slices/ProjectRealizedSlice";
+import {Ionicons} from "@expo/vector-icons";
 
 function UsersProfile() {
     const {username} = useLocalSearchParams();
     const {user, isLoading: isUserLoading, getUserByUsername} = useGetUserByUsername();
     const dispatch = useDispatch();
     const {userProjects, isLoading: isProjectsLoading, error} = useSelector((state) => state.project);
-
+    const Router = useRouter();
     useEffect(() => {
         if(username) {
             getUserByUsername(username);
@@ -26,6 +27,9 @@ function UsersProfile() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+                <Pressable onPress={() => Router.push('/(tab)')} style={{ backgroundColor: 'white', paddingHorizontal: 7, paddingVertical: 7, borderRadius: 50,shadowColor: 'gray', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3, position: 'absolute', left: 20, top: 50}}>
+                    <Ionicons name="arrow-back" color="black" size={30} />
+                </Pressable>
                 <View style={styles.profileWrapper}>
                     <ImageBackground
                         style={styles.profileImage}
@@ -67,7 +71,8 @@ function UsersProfile() {
                                 budget={project.budget}
                                 startDate={project.startDate}
                                 endDate={project.endDate}
-                                user={project.username}
+                                creator={project.username}
+                                username={project.username}
                             />
                         ))
                     ) : (
@@ -79,7 +84,7 @@ function UsersProfile() {
     );
 }
 
-const DetailItem = ({ label, value, color = "black", }) => (
+const DetailItem = ({ label, value, color = "black" }) => (
     <View style={styles.detailItem}>
         <Text>{label}</Text>
         <Text style={{ color, paddingVertical: 3 }}>{value}</Text>
@@ -94,6 +99,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f7f7f7",
     },
     header: {
+        position: 'relative',
         backgroundColor: "#77a6f7",
         borderRadius: 25,
         paddingVertical: 45,
