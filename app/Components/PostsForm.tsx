@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     StatusBar,
     View,
@@ -10,7 +10,7 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     Platform,
-    Pressable
+    Pressable, ActivityIndicator
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomInput from '../Components/PostsInput';
@@ -20,11 +20,25 @@ import {createPosts} from "@/app/redux/slices/PostSlice";
 import {Ionicons} from "@expo/vector-icons";
 import useCreatePosts from "@/app/hooks/useCreatePosts";
 import {Toast} from "@/app/CustomToast";
+import {clearCities, fetchCities} from "@/app/redux/slices/CitiesSlice";
+import AutocompleteInput from "react-native-autocomplete-input";
 
 function PostsForm({onClose}) {
     const {isLoading} = useSelector((state) => state.posts);
     const { imageUri, pickImage, setImageUri } = useImagePicker();
     const { form, handleChange, handleSubmit } = useCreatePosts(onClose, imageUri);
+    const [query, setQuery] = useState('');
+
+    const {cities} = useSelector((state) => state.cities);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(query.length > 2) {
+            dispatch(fetchCities(query));
+        } else {
+            dispatch(clearCities());
+        }
+    }, [query]);
 
     return (
         <View style={styles.container}>
@@ -47,7 +61,17 @@ function PostsForm({onClose}) {
                         <CustomInput value={form.category} onChangeText={(text) => handleChange('category', text)} placeholder="Category" />
                         <CustomInput value={form.investmentGoal} onChangeText={(text) => handleChange('investmentGoal', text)} placeholder="Investment goal ($)" keyboardType="numeric" />
                         <CustomInput value={form.currentInvestment} onChangeText={(text) => handleChange('currentInvestment', text)} placeholder="Current investment ($)" keyboardType="numeric" />
-                        <CustomInput value={form.location} onChangeText={(text) => handleChange('location', text)} placeholder="Location" />
+                        <View style={styles.autocompleteContainer}>
+                            <AutocompleteInput data={cities} value={query} onChangeText={(text) => {setQuery(text);handleChange('location', text);}}
+                                placeholder="Location"
+                                flatListProps={{scrollEnabled: false, keyExtractor: (item) => item.geonameId.toString(), renderItem: ({ item }) => (
+                                        <TouchableOpacity onPress={() => {setQuery(item.name + ', ' + item.countryName);handleChange('location', item.name + ', ' + item.countryName);dispatch(clearCities());}}>
+                                            <Text style={styles.itemText}>{item.name}, {item.countryName}</Text>
+                                        </TouchableOpacity>
+                                    ),
+                                }}
+                            />
+                        </View>
                         <CustomInput value={form.tags} onChangeText={(text) => handleChange('tags', text)} placeholder="Tags (separated by commas, e.g., Finance, Startup)" />
 
 
@@ -166,5 +190,27 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    autocompleteContainer: {
+        width: '100%',
+        marginBottom: 15,
+    },
+    itemText: {
+        fontSize: 16,
+        padding: 10,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    input: {
+        width: '100%',
+        height: 50,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        backgroundColor: '#fff',
     },
 });
