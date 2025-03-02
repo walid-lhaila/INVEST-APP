@@ -42,7 +42,10 @@ function PostDetails({visible, onClose, title, description, location, category, 
         }
     }, [visible, entrepreneur]);
 
-
+    const handleUserDetails = () => {
+        onClose();
+        onUserDetails();
+    }
     return (
         <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
             <View style={styles.modalBackground}>
@@ -118,7 +121,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                 <Text style={styles.error}>Error: {error}</Text>
                             ) : user ? (
                                 <>
-                                    <Pressable onPress={onUserDetails} style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                                    <Pressable onPress={handleUserDetails} style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
                                         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 10 }}>
                                             <View style={styles.profileContainer}>
                                                 <ImageBackground style={styles.profileImage} source={profile} resizeMode="cover"/>
