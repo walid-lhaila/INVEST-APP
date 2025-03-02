@@ -71,7 +71,7 @@ function Profile() {
                 <Text style={styles.sectionTitle}>Project Realized</Text>
                 <View style={{paddingVertical: 10}}>
                     {projects.map((project) => (
-                        <ProjectRealizedCard onDelete={() => handleDelete(project._id)} tags={project.tags} role={user.role} description={project.description} title={project.title} user={user.firstName} budget={project.budget} endDate={project.endDate} startDate={project.startDate} key={project._id} />
+                        <ProjectRealizedCard onDelete={() => handleDelete(project._id)} username={user.username} tags={project.tags} role={user.role} description={project.description} title={project.title} creator={user.username} budget={project.budget} endDate={project.endDate} startDate={project.startDate} key={project._id} />
                     ))}
                 </View>
             </ScrollView>

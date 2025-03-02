@@ -1,8 +1,9 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 import useProjectDuration from "@/app/Components/useProjectDuration";
+import useUser from "@/app/hooks/useUser";
 
 interface ProjectRealizedProps {
     title: string;
@@ -11,13 +12,19 @@ interface ProjectRealizedProps {
     startDate: Date;
     endDate: Date;
     tags: string;
-    user: string;
+    creator: string;
     role: string
+    username: string;
     onDelete: () => void;
 }
-function ProjectRealizedCard({title, description, budget, startDate, endDate, tags, user, role, onDelete}: ProjectRealizedProps) {
+function ProjectRealizedCard({title, description, budget, startDate, endDate, tags, creator, role, onDelete, username}: ProjectRealizedProps) {
+    const {user, loading} = useUser();
     const truncateTitle = title.length > 14 ? title.substring(0, 21) + '...' : title;
     const {duration} = useProjectDuration();
+    if(loading) {
+        return <ActivityIndicator size="large" color="#77a6f7" />;
+    }
+
     return (
         <View style={{ width: '95%', backgroundColor: 'white', marginHorizontal: 'auto', borderRadius: 10, marginTop: 10, shadowColor: '#77a6f7', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,}}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10}}>
@@ -46,16 +53,19 @@ function ProjectRealizedCard({title, description, budget, startDate, endDate, ta
                     </View>
 
                     <View>
-                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>{user}</Text>
+                        <Text style={{color: 'gray', fontSize: 15, fontWeight: 600, fontFamily: "Roboto"}}>{username}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10}}>
                             <Ionicons name={"briefcase-outline"} size={13} color={"#77a6f7"} />
                             <Text style={{color: 'gray', fontSize: 14, fontWeight: 300, fontFamily: "serif"}}>{role}</Text>
                         </View>
                     </View>
                 </View>
+                {user.username === creator && (
                     <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
                         <Ionicons name="trash-outline" size={20} color="white" />
                     </TouchableOpacity>
+                )}
+
             </View>
         </View>
     );
