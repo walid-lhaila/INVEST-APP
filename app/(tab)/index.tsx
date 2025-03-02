@@ -8,11 +8,13 @@ import PostDetails from "@/app/Components/PostDetails";
 import useGetAllPosts from "@/app/hooks/useGetAllPosts";
 import {useRouter} from "expo-router";
 import FilterBar from "@/app/Components/FilterBar";
+import useFilteredPosts from "@/app/hooks/useFilteredPosts";
 
 function Index() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [filter, setFilter] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
     const [showFilter, setShowFilter] = useState(false);
     const {posts, isLoading} = useGetAllPosts();
     const Router = useRouter();
@@ -32,22 +34,7 @@ function Index() {
         setModalVisible(true);
     };
 
-    const filterPost = (posts, filter) => {
-        switch (filter) {
-            case 'all':
-                return posts;
-            case 'investmentGoal-desc':
-                return [...posts].sort((x, y) => y.investmentGoal - x.investmentGoal);
-            case 'title':
-                return [...posts].sort((x, y) => x.title.localeCompare(y.title));
-            case 'date':
-                return [...posts].sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt));
-            default:
-                return posts;
-        }
-    };
-
-    const filteredPosts = filterPost(posts, filter);
+    const filteredPosts = useFilteredPosts(posts, filter, searchQuery);
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -58,7 +45,7 @@ function Index() {
                 <LinearGradient colors={['#77a6f7', '#f6f7ff']} style={styles.gradient}>
                     <View style={styles.content}>
                         <LoggedInUser />
-                        <SearchBar onFilterToggle={toggleFilterBar} />
+                        <SearchBar onFilterToggle={toggleFilterBar} onSearch={setSearchQuery} />
                         <Animated.View style={{ height: filterBarHeight, overflow: 'hidden' }}>
                             <FilterBar setFilter={setFilter} />
                         </Animated.View>

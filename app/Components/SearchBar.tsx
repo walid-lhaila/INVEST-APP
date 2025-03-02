@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, TextInput, StyleSheet, Pressable} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 interface SearchBarProps {
     onFilterToggle: () => void;
+    onSearch: (query: string) => void;
 }
-const SearchBar = ({onFilterToggle}: SearchBarProps) => {
+const SearchBar = ({onFilterToggle, onSearch}: SearchBarProps) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        onSearch(query);
+    }
     return (
         <View style={styles.container}>
             <Ionicons name="search" size={20} color="white" style={styles.icon} />
@@ -14,6 +20,8 @@ const SearchBar = ({onFilterToggle}: SearchBarProps) => {
                 placeholder="Search"
                 placeholderTextColor="white"
                 style={styles.input}
+                value={searchQuery}
+                onChangeText={handleSearch}
             />
             <Pressable onPress={onFilterToggle}>
                 <Ionicons name="filter" size={20} color="white" style={styles.iconRight} />
