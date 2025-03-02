@@ -27,14 +27,16 @@ function ChatComponent() {
     const {user, loading} = useUser();
     const [messageContent, setMessageContent] = useState('');
     const Router = useRouter();
-    const { messages, isLoading } = useFetchMessages(conversationId);
+    const { conversation, isLoading } = useFetchMessages(conversationId);
     useWebSocketMessages();
-    const otherUser = messages.find(msg => msg.senderUsername !== user?.username)?.senderUsername || "Unknown";
+    const otherUser = conversation?.user1 === user?.username ? conversation?.user2 : conversation?.user1 || "Unknown";
+    console.log(otherUser);
     const handleSendMessage = useSendMessage(user, otherUser);
-    const scrollViewRef = useAutoScroll([messages]);
+    const scrollViewRef = useAutoScroll([conversation?.messages]);
     if(isLoading || loading || !user) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
+    console.log("loggedIn User: ", user.username);
 
     return (
         <View style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
@@ -43,7 +45,7 @@ function ChatComponent() {
 
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                 <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ paddingHorizontal: 15, marginBottom: 20 }}>
-                    {messages.map((message, index) => (
+                    {conversation?.messages?.map((message, index) => (
                         <View key={index} style={message.senderUsername === user.username ? styles.sender : styles.receiver}>
                             <Text style={message.senderUsername === user.username ? styles.messageSender : styles.message}>
                                 {message.content}

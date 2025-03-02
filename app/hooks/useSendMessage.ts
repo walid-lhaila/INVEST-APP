@@ -17,6 +17,7 @@ const useSendMessage = (user, receiverUsername: string) => {
                 isRead: false,
                 id: Date.now().toString(),
             };
+            console.log(newMessage);
 
             dispatch(addMessage(newMessage));
 
