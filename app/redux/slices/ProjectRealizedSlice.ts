@@ -15,6 +15,7 @@ interface ProjectData {
 interface ProjectState {
     project: null;
     projects: [];
+    userProjects: [];
     isLoading: boolean;
     error: string | null;
 }
@@ -22,6 +23,7 @@ interface ProjectState {
 const initialState: ProjectState = {
     project: null,
     projects: [],
+    userProjects: [],
     isLoading: false,
     error: null,
 }
@@ -94,6 +96,28 @@ export const deleteProject = createAsyncThunk(
     }
 );
 
+export const getProjectByUsername = createAsyncThunk(
+    'project/getProjectsByUsername',
+    async (username: string, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/projects/getAllByUsername/${username}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                },
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error?.response?.data?.message || 'Something went wrong');
+        }
+    },
+);
+
 
 const projectSlice = createSlice({
     name: 'project',
@@ -141,6 +165,20 @@ const projectSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
+
+
+            .addCase(getProjectByUsername.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getProjectByUsername.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.userProjects = action.payload;
+            })
+            .addCase(getProjectByUsername.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            });
     },
 });
 export default projectSlice.reducer;

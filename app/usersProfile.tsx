@@ -4,17 +4,22 @@ import profile from "@/assets/images/profile.png";
 import ProjectRealizedCard from "@/app/Components/ProjectRealizedCard";
 import {useLocalSearchParams} from "expo-router";
 import useGetUserByUsername from "@/app/hooks/useGetUserByUsername";
+import {useDispatch, useSelector} from "react-redux";
+import {getProjectByUsername} from "@/app/redux/slices/ProjectRealizedSlice";
 
 function UsersProfile() {
     const {username} = useLocalSearchParams();
-    const {user, isLoading, getUserByUsername} = useGetUserByUsername();
+    const {user, isLoading: isUserLoading, getUserByUsername} = useGetUserByUsername();
+    const dispatch = useDispatch();
+    const {userProjects, isLoading: isProjectsLoading, error} = useSelector((state) => state.project);
 
     useEffect(() => {
         if(username) {
             getUserByUsername(username);
+            dispatch(getProjectByUsername(username as string));
         }
     }, [username]);
-    if(isLoading){
+    if(isUserLoading || isProjectsLoading){
         return <ActivityIndicator size="large" color="#77a6f7" style={styles.loading} />;
     }
 
@@ -51,8 +56,23 @@ function UsersProfile() {
 
                 <Text style={styles.sectionTitle}>Project Realized</Text>
                 <View style={{paddingVertical: 10}}>
-                        <ProjectRealizedCard tags="tes" role="Investor" description="trev dec erfsdvreq vqsdcezefr gfdsdezd " title="test" user="test" budget="7654" endDate="10" startDate="3232" />
-                </View>
+                    {userProjects.length > 0 ? (
+                        userProjects.map((project) => (
+                            <ProjectRealizedCard
+                                role={user.role}
+                                key={project._id}
+                                title={project.title}
+                                description={project.description}
+                                tags={project.tags}
+                                budget={project.budget}
+                                startDate={project.startDate}
+                                endDate={project.endDate}
+                                user={project.username}
+                            />
+                        ))
+                    ) : (
+                        <Text style={styles.noProjectsText}>No projects found.</Text>
+                    )}                </View>
             </ScrollView>
 
         </View>
@@ -128,5 +148,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    noProjectsText: {
+        textAlign: 'center',
+        color: '#777',
+        marginTop: 10,
     },
 });
