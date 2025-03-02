@@ -2,6 +2,7 @@ import {configureStore} from "@reduxjs/toolkit";
 import authReducer from './slices/AuthSlice';
 import postReducer from './slices/PostSlice';
 import userReducer from './slices/UserSlice';
+import citiesReducer from './slices/CitiesSlice';
 import projectRealizedReducer from './slices/ProjectRealizedSlice'
 import conversationReducer from './slices/ConversationSlice'
 
@@ -10,6 +11,7 @@ export const store = configureStore({
         auth: authReducer,
         posts: postReducer,
         user: userReducer,
+        cities: citiesReducer,
         project: projectRealizedReducer,
         conversation: conversationReducer,
     },

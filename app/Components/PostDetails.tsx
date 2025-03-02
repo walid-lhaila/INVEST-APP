@@ -138,8 +138,6 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                             </View>
                                         </View>
                                     </Pressable>
-                                    <Text style={styles.qualification}>• (+212) {user.phone}</Text>
-                                    <Text style={styles.qualification}>• {user.email}</Text>
                                 </>
                             ) : (
                                 <Text style={styles.error}>No contact information available</Text>
