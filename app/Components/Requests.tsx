@@ -8,6 +8,7 @@ import useGetAllRequest from "@/app/hooks/useGetAllRequest";
 import {useDispatch} from "react-redux";
 import {acceptRequest} from "@/app/redux/slices/RequestSlice";
 import useHandleAcceptRequest from "@/app/hooks/useHandleAcceptRequest";
+import useHandleRejectRequest from "@/app/hooks/useHandleRejectRequest";
 
 interface RequestProps {
     onPress: () => void;
@@ -15,6 +16,7 @@ interface RequestProps {
 function Requests({onPress}: RequestProps) {
     const {requests} = useGetAllRequest();
     const {handleAccept} = useHandleAcceptRequest();
+    const {handleReject} = useHandleRejectRequest();
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -29,7 +31,7 @@ function Requests({onPress}: RequestProps) {
                     </View>
                     <ScrollView contentContainerStyle={styles.requestList}>
                         {requests.map((request) => (
-                            <RequestCard onAccept={handleAccept} key={request._id} requestId={request._id} username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
+                            <RequestCard onAccept={handleAccept} onReject={handleReject} key={request._id} requestId={request._id} username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
                         ))}
                     </ScrollView>
                 </View>
