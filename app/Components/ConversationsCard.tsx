@@ -2,6 +2,7 @@ import React from 'react';
 import {ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View} from 'react-native';
 import profile from '@/assets/images/profile.png';
 import useUser from "@/app/hooks/useUser";
+import moment from 'moment';
 
 interface ConversationsCardProps {
     conversation: any;
@@ -22,6 +23,13 @@ function ConversationsCard({ conversation, onPress }: ConversationsCardProps) {
         ? conversation.messages[conversation.messages.length - 1].content
         : '';
 
+    const lastMessageTime = conversation.messages.length > 0
+        ? conversation.messages[conversation.messages.length - 1].timestamp
+        : null;
+
+    const formattedTime = lastMessageTime ? moment(lastMessageTime).fromNow() : '';
+
+
     return (
         <Pressable onPress={onPress} style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomColor: '#9c9c9c', borderWidth: 1, borderBottomWidth: 1, borderLeftWidth: 0, borderRightWidth: 0, borderTopWidth: 0,}}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }}>
@@ -34,13 +42,13 @@ function ConversationsCard({ conversation, onPress }: ConversationsCardProps) {
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10,}}>
                         <Text style={{ color: '#717171', fontSize: 14, fontWeight: '300', fontFamily: 'serif' }}>
-                            {lastMessage}
+                            {lastMessage || `Say Hello To ${otherUser}`}
                         </Text>
                     </View>
                 </View>
             </View>
-            <View style={{ alignItems: 'center', gap: 5 }}>
-                <Text style={{ color: '#77a6f7' }}>08:25</Text>
+            <View style={{ alignItems: 'flex-end', gap: 5 }}>
+                <Text style={{ color: '#77a6f7' }}>{formattedTime}</Text>
                 {unreadMessagesFromOtherUser.length > 0 && (
                     <View style={{ backgroundColor: '#77a6f7', paddingVertical: 1, paddingHorizontal: 5, borderRadius: 50 }}>
                         <Text>{unreadMessagesFromOtherUser.length}</Text>
