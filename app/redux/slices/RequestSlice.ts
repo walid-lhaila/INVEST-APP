@@ -84,6 +84,28 @@ export const acceptRequest = createAsyncThunk(
             return rejectWithValue(error?.response?.data?.message || "Something Went Wrong");
         }
     }
+);
+
+export const rejectRequest = createAsyncThunk(
+    'request/rejectRequest',
+    async(requestId: string, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const respone = await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/requests/reject`, {requestId},
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return respone.data;
+        } catch (errro) {
+            return rejectWithValue(error?.response?.data?.message || "Something Went Wrong");
+        }
+    }
 )
 
 
@@ -105,6 +127,7 @@ const requestSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
+
 
             .addCase(sendRequest.pending, (state) => {
                 state.isLoading = true;
@@ -131,7 +154,21 @@ const requestSlice = createSlice({
             .addCase(acceptRequest.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
-            });
+            })
+
+
+            .addCase(rejectRequest.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(rejectRequest.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.requests = state.requests.filter(request => request._id !== action.payload._id);
+            })
+            .addCase(rejectRequest.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
     },
 });
 
