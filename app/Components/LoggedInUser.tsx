@@ -3,6 +3,7 @@ import {ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View} f
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 import useUser from "@/app/hooks/useUser";
+import useGetAllRequest from "@/app/hooks/useGetAllRequest";
 
 interface LoggedInUserProps {
     onNotification: () => void;
@@ -10,6 +11,7 @@ interface LoggedInUserProps {
 
 function LoggedInUser({onNotification}: LoggedInUserProps) {
     const {user, loading} = useUser();
+    const {requests} = useGetAllRequest();
     if(loading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
@@ -32,13 +34,8 @@ function LoggedInUser({onNotification}: LoggedInUserProps) {
                     </View>
                 </View>
             </View>
-            <Pressable onPress={onNotification} style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                borderRadius: 50,
-                padding: 8,
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
+            <Pressable onPress={onNotification} style={{backgroundColor: 'rgba(255, 255, 255, 0.3)', borderRadius: 50, padding: 8, justifyContent: 'center', alignItems: 'center'}}>
+                {requests.length > 0 && <View style={styles.notificationDot} />}
                 <Ionicons name="notifications-outline" color="white" size={25} />
             </Pressable>
         </View>
@@ -66,5 +63,14 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         overflow: 'hidden',
     },
+    notificationDot: {
+        backgroundColor: 'red',
+        width: 8,
+        height: 8,
+        borderRadius: 50,
+        position: 'absolute',
+        top: 0,
+        right: 8,
+    }
 
 });
