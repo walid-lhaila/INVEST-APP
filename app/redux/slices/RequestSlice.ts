@@ -59,6 +59,30 @@ export const sendRequest = createAsyncThunk(
             return rejectWithValue(error?.response?.data?.message || 'Something Went Wrong');
         }
     }
+);
+
+
+
+export const acceptRequest = createAsyncThunk(
+    'request/acceptRequest',
+    async({requestId, status}: {requestId: string; status: string}, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/requests/accept`, {requestId, status},
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error?.response?.data?.message || "Something Went Wrong");
+        }
+    }
 )
 
 
@@ -90,6 +114,20 @@ const requestSlice = createSlice({
                 state.requests = [action.payload, ...state.requests];
             })
             .addCase(sendRequest.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(acceptRequest.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(acceptRequest.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.requests = state.requests.filter(request => request._id !== action.payload._id);
+            })
+            .addCase(acceptRequest.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             });

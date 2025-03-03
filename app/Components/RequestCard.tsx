@@ -8,9 +8,11 @@ interface RequestCardProps {
     username: string;
     role: string;
     createdAt: string;
+    requestId: string;
+    onAccept: (requestId: string) => void;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ username, role, createdAt }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ username, role, createdAt, onAccept, requestId }) => {
     const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
     return (
         <View style={styles.card}>
@@ -30,7 +32,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ username, role, createdAt }) 
             </View>
 
             <View style={styles.actions}>
-                <TouchableOpacity style={styles.acceptButton}>
+                <TouchableOpacity onPress={() => onAccept(requestId)} style={styles.acceptButton}>
                     <Ionicons name="checkmark-circle" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.rejectButton}>
