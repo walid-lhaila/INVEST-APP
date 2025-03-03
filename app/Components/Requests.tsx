@@ -5,12 +5,17 @@ import {Toast} from "@/app/CustomToast";
 import {Ionicons} from "@expo/vector-icons";
 import RequestCard from "@/app/Components/RequestCard";
 import useGetAllRequest from "@/app/hooks/useGetAllRequest";
+import {useDispatch} from "react-redux";
+import {acceptRequest} from "@/app/redux/slices/RequestSlice";
+import useHandleAcceptRequest from "@/app/hooks/useHandleAcceptRequest";
 
 interface RequestProps {
     onPress: () => void;
 }
 function Requests({onPress}: RequestProps) {
-    const {requests, isLoading, error} = useGetAllRequest();
+    const {requests} = useGetAllRequest();
+    const {handleAccept} = useHandleAcceptRequest();
+
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -24,7 +29,7 @@ function Requests({onPress}: RequestProps) {
                     </View>
                     <ScrollView contentContainerStyle={styles.requestList}>
                         {requests.map((request) => (
-                            <RequestCard username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
+                            <RequestCard onAccept={handleAccept} key={request._id} requestId={request._id} username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
                         ))}
                     </ScrollView>
                 </View>
