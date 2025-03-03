@@ -1,11 +1,14 @@
 import React from 'react';
-import {ActivityIndicator, ImageBackground, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
 import useUser from "@/app/hooks/useUser";
 
+interface LoggedInUserProps {
+    onNotification: () => void;
+}
 
-function LoggedInUser() {
+function LoggedInUser({onNotification}: LoggedInUserProps) {
     const {user, loading} = useUser();
     if(loading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
@@ -29,7 +32,7 @@ function LoggedInUser() {
                     </View>
                 </View>
             </View>
-            <View style={{
+            <Pressable onPress={onNotification} style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.3)',
                 borderRadius: 50,
                 padding: 8,
@@ -37,7 +40,7 @@ function LoggedInUser() {
                 alignItems: 'center'
             }}>
                 <Ionicons name="notifications-outline" color="white" size={25} />
-            </View>
+            </Pressable>
         </View>
     );
 }

@@ -3,6 +3,7 @@ import authReducer from './slices/AuthSlice';
 import postReducer from './slices/PostSlice';
 import userReducer from './slices/UserSlice';
 import citiesReducer from './slices/CitiesSlice';
+import requestReducer from './slices/RequestSlice';
 import projectRealizedReducer from './slices/ProjectRealizedSlice'
 import conversationReducer from './slices/ConversationSlice'
 
@@ -12,6 +13,7 @@ export const store = configureStore({
         posts: postReducer,
         user: userReducer,
         cities: citiesReducer,
+        request: requestReducer,
         project: projectRealizedReducer,
         conversation: conversationReducer,
     },
