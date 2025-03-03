@@ -8,12 +8,16 @@ import {
     TouchableOpacity,
     ScrollView,
     ImageBackground,
-    ActivityIndicator, Pressable,
+    ActivityIndicator, Pressable, Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import profile from "@/assets/images/profile.png";
 import useGetUserByUsername from "@/app/hooks/useGetUserByUsername";
+import {useDispatch} from "react-redux";
+import {sendRequest} from "@/app/redux/slices/RequestSlice";
+import {Toast} from "@/app/CustomToast";
+import useConnect from "@/app/hooks/useConnect";
 
 interface PostDetailsProps {
     title: string;
@@ -32,7 +36,7 @@ interface PostDetailsProps {
 }
 
 function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags, onUserDetails}: PostDetailsProps) {
-    const Router = useRouter();
+    const { handleConnect } = useConnect(onClose);
     const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
     const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
 
@@ -150,13 +154,14 @@ function PostDetails({visible, onClose, title, description, location, category, 
                             <Ionicons name="bookmark-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Favorite</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Router.push("/(tab)/chat")} style={styles.messageButton}>
-                            <Ionicons name="chatbubble-outline" size={20} color="white" />
-                            <Text style={styles.buttonText}>Message</Text>
+                        <TouchableOpacity onPress={() => handleConnect(entrepreneur)} style={styles.messageButton}>
+                            <Ionicons name="person-add-outline" size={20} color="white" />
+                            <Text style={styles.buttonText}>Connect</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
+            <Toast />
         </Modal>
     );
 }
@@ -268,7 +273,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         position: "absolute",
-        bottom: 20,
+        bottom: 30,
         left: 20,
         right: 20,
     },
