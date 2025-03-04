@@ -4,8 +4,9 @@ import postReducer from './slices/PostSlice';
 import userReducer from './slices/UserSlice';
 import citiesReducer from './slices/CitiesSlice';
 import requestReducer from './slices/RequestSlice';
-import projectRealizedReducer from './slices/ProjectRealizedSlice'
-import conversationReducer from './slices/ConversationSlice'
+import favoritesReducer from './slices/FavoritesSlice';
+import projectRealizedReducer from './slices/ProjectRealizedSlice';
+import conversationReducer from './slices/ConversationSlice';
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
         user: userReducer,
         cities: citiesReducer,
         request: requestReducer,
+        favorites: favoritesReducer,
         project: projectRealizedReducer,
         conversation: conversationReducer,
     },
