@@ -1,11 +1,17 @@
 import React from 'react';
-import {StatusBar, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, StatusBar, StyleSheet, Text, View} from "react-native";
 import useGetFavorites from "@/app/hooks/useGetFavorites";
 import {LinearGradient} from "expo-linear-gradient";
 import UserPostCard from "@/app/Components/UserPostCard";
+import useRemoveFavorites from "@/app/hooks/useRemoveFavorites";
+import {Toast} from "@/app/CustomToast";
 
 function Favorites() {
     const {favorites, isLoading} = useGetFavorites();
+    const {handleDelete} = useRemoveFavorites();
+    if (isLoading) {
+        return <ActivityIndicator size="large" color="#77a6f7" style={styles.loader} />;
+    }
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -13,10 +19,11 @@ function Favorites() {
                 <View style={styles.content}>
                     <Text style={styles.header}>My Favorites</Text>
                     {favorites.map((favorite) => (
-                        <UserPostCard key={favorite._id} title={favorite.post.title} description={favorite.post.description} category={favorite.post.category} location={favorite.post.location} currentInvestment={favorite.post.currentInvestment} investmentGoal={favorite.post.investmentGoal} entrepreneur={favorite.post.entrepreneur} createdAt={favorite.post.createdAt} />
+                        <UserPostCard onDelete={() => handleDelete(favorite._id)} key={favorite._id} title={favorite.post.title} description={favorite.post.description} category={favorite.post.category} location={favorite.post.location} currentInvestment={favorite.post.currentInvestment} investmentGoal={favorite.post.investmentGoal} entrepreneur={favorite.post.entrepreneur} createdAt={favorite.post.createdAt} />
                     ))}
                 </View>
             </LinearGradient>
+            <Toast />
         </View>
     );
 }
@@ -42,5 +49,10 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         color: "white",
         marginBottom: 10,
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

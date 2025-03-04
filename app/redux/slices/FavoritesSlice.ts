@@ -38,6 +38,29 @@ export const getFavoriteByUser = createAsyncThunk(
 );
 
 
+export const removeFavorite = createAsyncThunk(
+    'favorites/removeFavorite',
+    async(favoriteId: string, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing');
+            }
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites/remove/${favoriteId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error?.response?.data?.message || 'Something Went Wrong');
+        }
+    }
+);
+
+
 
 const favoritesSlice = createSlice({
     name: 'favorites',
@@ -54,6 +77,19 @@ const favoritesSlice = createSlice({
                 state.favorites = action.payload;
             })
             .addCase(getFavoriteByUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+            .addCase(removeFavorite.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(removeFavorite.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.favorites = state.favorites.filter((favorite) => favorite._id !== action.payload._id)
+            })
+            .addCase(removeFavorite.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
