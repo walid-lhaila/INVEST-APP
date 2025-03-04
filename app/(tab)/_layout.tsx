@@ -27,9 +27,8 @@ export default function TabLayout() {
     if (loading) {
         return <Text>Loading...</Text>;
     }
-
-    console.log("User Role:", user.role);
-
+    const isEntrepreneur = user.role === "Entrepreneur";
+    const tabIconName = isEntrepreneur ? "business" : "bookmark";
     return (
         <Tabs
             screenOptions={{
@@ -69,7 +68,7 @@ export default function TabLayout() {
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <Ionicons
-                            name={focused ? "briefcase" : "briefcase-outline"}
+                            name={focused ? tabIconName: `${tabIconName}-outline`}
                             color={'#77a6f7'}
                             size={30}
                         />
