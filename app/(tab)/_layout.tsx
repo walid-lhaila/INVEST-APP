@@ -1,15 +1,16 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {initializeSocket} from "@/app/services/socket";
+import { initializeSocket } from "@/app/services/socket";
+import useUser from "@/app/hooks/useUser";
+import { Text } from "react-native";
 
 export default function TabLayout() {
     useEffect(() => {
         const initSocket = async () => {
             try {
                 const token = await AsyncStorage.getItem("token");
-
                 if (token) {
                     initializeSocket(token);
                 } else {
@@ -19,9 +20,16 @@ export default function TabLayout() {
                 console.error("Erreur lors de la récupération du token :", error);
             }
         };
-
         initSocket();
     }, []);
+
+    const { user, loading } = useUser();
+    if (loading) {
+        return <Text>Loading...</Text>;
+    }
+
+    console.log("User Role:", user.role);
+
     return (
         <Tabs
             screenOptions={{
@@ -50,16 +58,12 @@ export default function TabLayout() {
                     title: "",
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "home" : "home-outline"}
-                            color={'#77a6f7'}
-                            size={30}
-                        />
+                        <Ionicons name={focused ? "home" : "home-outline"} color={'#77a6f7'} size={30} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="projects"
+                name="(user)"
                 options={{
                     title: "",
                     headerShown: false,
@@ -72,17 +76,14 @@ export default function TabLayout() {
                     ),
                 }}
             />
+
             <Tabs.Screen
                 name="chat"
                 options={{
                     title: "",
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "chatbubble" : "chatbubble-outline"}
-                            color={'#77a6f7'}
-                            size={30}
-                        />
+                        <Ionicons name={focused ? "chatbubble" : "chatbubble-outline"} color={'#77a6f7'} size={30} />
                     ),
                 }}
             />
@@ -92,14 +93,11 @@ export default function TabLayout() {
                     title: "",
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "person" : "person-outline"}
-                            color={'#77a6f7'}
-                            size={30}
-                        />
+                        <Ionicons name={focused ? "person" : "person-outline"} color={'#77a6f7'} size={30} />
                     ),
                 }}
             />
+
         </Tabs>
     );
 }
