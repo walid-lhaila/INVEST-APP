@@ -1,11 +1,11 @@
-import { ImageBackground, Pressable, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React from 'react';
+import {ImageBackground, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import profile from "@/assets/images/profile.png";
-import { Ionicons } from "@expo/vector-icons";
-import useAnimatedPercentage from "@/app/hooks/useAnimatedPercentage";
-import React from "react";
+import {Ionicons} from "@expo/vector-icons";
 import {formatDistanceToNow} from "date-fns";
+import useAnimatedPercentage from "@/app/hooks/useAnimatedPercentage";
 
-interface UserPostCardProps {
+interface UserFavoriteCardProps {
     title: string;
     description: string;
     category: string;
@@ -15,17 +15,16 @@ interface UserPostCardProps {
     entrepreneur: string;
     createdAt: string;
     onDelete: () => void;
-    onPress: () => void;
 }
 
-function UserPostCard({ onPress, title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, createdAt }: UserPostCardProps) {
+function FavoriteCard({ title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, createdAt }: UserFavoriteCardProps) {
     const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
-    const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
     const targetPercentage = Math.floor((currentInvestment / investmentGoal) * 100);
     const animatedPercentage = useAnimatedPercentage(targetPercentage)
+
     return (
-        <Pressable onPress={onPress} style={styles.card}>
+        <Pressable style={styles.card}>
             <View style={styles.header}>
                 <Text style={styles.title}>{truncateTitle}</Text>
                 <View style={{ paddingHorizontal: 10, width: '40%' }}>
@@ -63,7 +62,6 @@ function UserPostCard({ onPress, title, description, category, location, current
                     </View>
                 </View>
                 <View style={styles.actions}>
-                    <Text style={styles.time}>{timeAgo}</Text>
                     <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
                         <Ionicons name="trash-outline" size={20} color="white" />
                     </TouchableOpacity>
@@ -73,7 +71,7 @@ function UserPostCard({ onPress, title, description, category, location, current
     );
 }
 
-export default UserPostCard;
+export default FavoriteCard;
 
 const styles = StyleSheet.create({
     card: {
