@@ -71,12 +71,9 @@ function PostDetails({visible, onClose, title, description, location, category, 
                         <View style={styles.jobInfo}>
                             <Image source={{ uri: src }} style={styles.companyLogo} />
                             <View>
-                                <Text style={styles.jobTitle}>{truncateTitle}</Text>
+                                <Text style={styles.jobTitle}>{title}</Text>
                                 <Text style={styles.companyName}>Location • {location}</Text>
                             </View>
-                            <TouchableOpacity>
-                                <Ionicons name="bookmark-outline" size={24} color="black" />
-                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.tagsContainer}>
@@ -201,17 +198,19 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     jobInfo: {
+        gap: 15,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         marginBottom: 15,
     },
     companyLogo: {
-        width: 50,
-        height: 50,
+        width: 65,
+        height: 65,
         borderRadius: 10,
     },
     jobTitle: {
+        width: '97%',
         fontSize: 20,
         fontWeight: "bold",
     },
