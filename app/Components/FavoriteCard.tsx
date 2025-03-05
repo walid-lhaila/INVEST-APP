@@ -18,7 +18,6 @@ interface UserFavoriteCardProps {
 }
 
 function FavoriteCard({ title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, createdAt }: UserFavoriteCardProps) {
-    const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
     const targetPercentage = Math.floor((currentInvestment / investmentGoal) * 100);
     const animatedPercentage = useAnimatedPercentage(targetPercentage)
@@ -26,13 +25,7 @@ function FavoriteCard({ title, description, category, location, currentInvestmen
     return (
         <Pressable style={styles.card}>
             <View style={styles.header}>
-                <Text style={styles.title}>{truncateTitle}</Text>
-                <View style={{ paddingHorizontal: 10, width: '40%' }}>
-                    <View style={styles.progressBarContainer}>
-                        <View style={[styles.progressBar, {width: `${animatedPercentage}%`}]}/>
-                    </View>
-                    <Text style={styles.percentageText}>{animatedPercentage}%</Text>
-                </View>
+                <Text style={styles.title}>{title}</Text>
             </View>
 
             <Text style={styles.description}>{description}</Text>
@@ -66,6 +59,12 @@ function FavoriteCard({ title, description, category, location, currentInvestmen
                         <Ionicons name="trash-outline" size={20} color="white" />
                     </TouchableOpacity>
                 </View>
+            </View>
+            <View style={{ paddingHorizontal: 10, width: '100%', marginTop: 10 }}>
+                <View style={styles.progressBarContainer}>
+                    <View style={[styles.progressBar, {width: `${animatedPercentage}%`}]}/>
+                </View>
+                <Text style={styles.percentageText}>{animatedPercentage}%</Text>
             </View>
         </Pressable>
     );
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
     },
     progressBarContainer: {
         position: 'relative',
-        height: 23,
+        height: 30,
         width: '100%',
         backgroundColor: '#e0e0e0',
         borderRadius: 5,
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         color: 'white',
         textAlign: 'center',
-        top: 4,
-        left: 60
+        top: '20%',
+        left: '50%'
     },
 });
