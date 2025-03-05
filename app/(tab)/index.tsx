@@ -20,7 +20,6 @@ function Index() {
     const [showFilter, setShowFilter] = useState(false);
     const {posts, isLoading} = useGetAllPosts();
     const Router = useRouter();
-
     const filterBarHeight = useRef(new Animated.Value(0)).current;
     const toggleFilterBar = () => {
         Animated.timing(filterBarHeight, {
@@ -74,6 +73,7 @@ function Index() {
                     )}
                     {selectedPost && (
                         <PostDetails
+                            key={selectedPost._id}
                             onUserDetails={() => Router.push({ pathname: "/usersProfile", params: {username: selectedPost.entrepreneur}})}
                             visible={modalVisible}
                             onClose={() => setModalVisible(false)}
@@ -87,6 +87,7 @@ function Index() {
                             src={selectedPost.imageUrl}
                             status={selectedPost.status}
                             tags={selectedPost.tags}
+                            id={selectedPost._id}
                         />
                     )}
                 </View>

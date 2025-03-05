@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import {sendRequest} from "@/app/redux/slices/RequestSlice";
 import {Toast} from "@/app/CustomToast";
 import useConnect from "@/app/hooks/useConnect";
+import useAddFavorite from "@/app/hooks/useAddFavorite";
 
 interface PostDetailsProps {
     title: string;
@@ -33,10 +34,12 @@ interface PostDetailsProps {
     onClose: () => void;
     onUserDetails: () => void;
     visible: boolean;
+    id: string;
 }
 
-function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags, onUserDetails}: PostDetailsProps) {
+function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags, onUserDetails, id}: PostDetailsProps) {
     const { handleConnect } = useConnect(onClose);
+    const { handleAddFavorite } = useAddFavorite();
     const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
     const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
 
@@ -150,7 +153,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                     </ScrollView>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.favoriteButton}>
+                        <TouchableOpacity onPress={() => handleAddFavorite(id)} style={styles.favoriteButton}>
                             <Ionicons name="bookmark-outline" size={20} color="white" />
                             <Text style={styles.buttonText}>Favorite</Text>
                         </TouchableOpacity>
@@ -160,8 +163,8 @@ function PostDetails({visible, onClose, title, description, location, category, 
                         </TouchableOpacity>
                     </View>
                 </View>
+                <Toast />
             </View>
-            <Toast />
         </Modal>
     );
 }
