@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
     Dimensions,
     ImageBackground,
@@ -17,13 +17,19 @@ import {Ionicons} from "@expo/vector-icons";
 import useRegister from "@/app/hooks/useRegister";
 import Toast from "react-native-toast-message";
 import FocusedInput from "@/app/Components/FocusedInput";
+import {useRegisterSuggestions} from "@/app/hooks/useRegisterSuggestions";
 
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
 function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Investor" }) {
+    const {formData, handleChange, handleRegister, setFormData} = useRegister(role);
+    const debouncedSearch = useRegisterSuggestions(setFormData);
 
-    const {formData, handleChange, handleRegister} = useRegister(role);
+    const handleSearch = useCallback((text: string) => {
+        handleChange('search', text);
+        debouncedSearch(text);
+    }, [handleChange, debouncedSearch]);
 
     return (
         <View style={styles.container}>
@@ -39,10 +45,11 @@ function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Inv
                             <Input placeHolder="Last Name" iconName="person-outline" onChangeText={(text) => handleChange('lastName', text)} />
                             <Input placeHolder="Username" iconName="person-circle-outline" onChangeText={(text) => handleChange('username', text)} />
                             <Input placeHolder="Phone Number" iconName="call-outline" onChangeText={(text) => handleChange('phone', text)} />
-                            <Input placeHolder="Interest" iconName="bulb-outline" onChangeText={(text) => handleChange('fieldOfInterest', text)} />
-                            <Input placeHolder="Services" iconName="construct-outline" onChangeText={(text) => handleChange('services', text)} />
+                            <Input placeHolder="What are you looking for?" iconName="search-outline" onChangeText={handleSearch} />
                             <Input placeHolder="Company Name" iconName="business-outline" onChangeText={(text) => handleChange('companyName', text)} />
                             <Input placeHolder="Description" iconName="document-text-outline" onChangeText={(text) => handleChange('companyDescription', text)} />
+                            <Input placeHolder="Interest" iconName="bulb-outline" value={formData.fieldOfInterest || ''} onChangeText={(text) => handleChange('fieldOfInterest', text)} />
+                            <Input placeHolder="Services" iconName="construct-outline" value={formData.services || ''} onChangeText={(text) => handleChange('services', text)} />
                             <Input placeHolder="Email Address" iconName="mail-outline" onChangeText={(text) => handleChange('email', text)} />
                             <Input placeHolder="Password" iconName="key-outline" onChangeText={(text) => handleChange('password', text)} />
                             </FocusedInput>
