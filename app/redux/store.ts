@@ -5,6 +5,7 @@ import userReducer from './slices/UserSlice';
 import citiesReducer from './slices/CitiesSlice';
 import requestReducer from './slices/RequestSlice';
 import favoritesReducer from './slices/FavoritesSlice';
+import suggestionsReducer from './slices/SuggestionsSlice';
 import projectRealizedReducer from './slices/ProjectRealizedSlice';
 import conversationReducer from './slices/ConversationSlice';
 
@@ -15,6 +16,7 @@ export const store = configureStore({
         user: userReducer,
         cities: citiesReducer,
         request: requestReducer,
+        suggestions: suggestionsReducer,
         favorites: favoritesReducer,
         project: projectRealizedReducer,
         conversation: conversationReducer,
