@@ -4,13 +4,14 @@ import ChatSearch from "@/app/Components/ChatSearch";
 import ConversationsCard from "@/app/Components/ConversationsCard";
 import {useRouter} from "expo-router";
 import useGetAllConversations from "@/app/hooks/useGetAllConversations";
+import {useDispatch} from "react-redux";
+import {markMessagesAsRead} from "@/app/redux/slices/ConversationSlice";
 
 function Chat() {
-    const {conversations, isLoading} = useGetAllConversations();
+    const dispatch = useDispatch();
+    const {conversations} = useGetAllConversations();
     const Router = useRouter()
-    if(isLoading) {
-        return <ActivityIndicator size="large" color="#77a6f7" />;
-    }
+
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -25,7 +26,7 @@ function Chat() {
                     <Text style={{ marginTop: 20, color: 'black', fontWeight: 700,}}>ALL MESSAGES</Text>
                     <ScrollView  showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ marginTop: 10}}>
                         {conversations.map((conversation) => (
-                                <ConversationsCard key={conversation._id} onPress={() => Router.push({ pathname: "/chatComponent", params: { conversationId: conversation._id }})} conversation={conversation}/>
+                                <ConversationsCard key={conversation._id} onPress={() => {dispatch(markMessagesAsRead(conversation._id)); Router.push({ pathname: "/chatComponent", params: { conversationId: conversation._id } })}} conversation={conversation}/>
                         ))}
                     </ScrollView>
                 </View>

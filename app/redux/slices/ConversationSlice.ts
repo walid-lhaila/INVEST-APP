@@ -81,7 +81,30 @@ export const fetchConversationById = createAsyncThunk(
                 );
             return response.data;
         } catch (error) {
-            return rejectWithValue(error?.message?.data?.message || 'Smething Went Wrong');
+            return rejectWithValue(error?.message?.data?.message || 'Something Went Wrong');
+        }
+    }
+);
+
+export const markMessagesAsRead = createAsyncThunk(
+    'conversation/markMessagesAsRead',
+    async(conversationId, {rejectWithValue}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization Missing Token');
+            }
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/messages/conversation/${conversationId}/mark-as-read`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                }
+                );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error?.message?.data?.message || 'Something Went Wrong')
         }
     }
 );
@@ -135,6 +158,24 @@ const conversationSlice = createSlice({
                 state.conversation = action.payload;
             })
             .addCase(fetchConversationById.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(markMessagesAsRead.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(markMessagesAsRead.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const updatedConversation = action.payload;
+                state.conversation = updatedConversation;
+                state.conversations = state.conversation.map(convo =>
+                convo._id === updatedConversation._id ? updatedConversation : convo
+                )
+            })
+            .addCase(markMessagesAsRead.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             });

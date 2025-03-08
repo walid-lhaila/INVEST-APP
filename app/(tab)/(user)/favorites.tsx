@@ -1,10 +1,10 @@
 import React from 'react';
-import {ActivityIndicator, StatusBar, StyleSheet, Text, View} from "react-native";
+import {StatusBar, StyleSheet, Text, View} from "react-native";
 import useGetFavorites from "@/app/hooks/useGetFavorites";
 import {LinearGradient} from "expo-linear-gradient";
 import useRemoveFavorites from "@/app/hooks/useRemoveFavorites";
-import {Toast} from "@/app/CustomToast";
 import FavoriteCard from "@/app/Components/FavoriteCard";
+import {Ionicons} from "@expo/vector-icons";
 
 function Favorites() {
     const {favorites} = useGetFavorites();
@@ -16,9 +16,30 @@ function Favorites() {
             <LinearGradient colors={['#77a6f7', '#f6f7ff']} style={styles.gradient}>
                 <View style={styles.content}>
                     <Text style={styles.header}>My Favorites</Text>
-                    {favorites.map((favorite) => (
-                        <FavoriteCard  onDelete={() => handleDelete(favorite._id)} key={favorite._id} title={favorite.post.title} description={favorite.post.description} category={favorite.post.category} location={favorite.post.location} currentInvestment={favorite.post.currentInvestment} investmentGoal={favorite.post.investmentGoal} entrepreneur={favorite.post.entrepreneur} createdAt={favorite.post.createdAt} />
-                    ))}
+                    {favorites.length === 0 ? (
+                        <View style={styles.emptyContainer}>
+                            <Ionicons name="bookmark" size={100} color="gray" />
+                            <Text style={styles.emptyText}>No Favorites Yet</Text>
+                            <Text style={styles.emptySubText}>
+                                Start adding your favorite posts to see them here!
+                            </Text>
+                        </View>
+                    ) : (
+                        favorites.map((favorite) => (
+                            <FavoriteCard
+                                onDelete={() => handleDelete(favorite._id)}
+                                key={favorite._id}
+                                title={favorite.post.title}
+                                description={favorite.post.description}
+                                category={favorite.post.category}
+                                location={favorite.post.location}
+                                currentInvestment={favorite.post.currentInvestment}
+                                investmentGoal={favorite.post.investmentGoal}
+                                entrepreneur={favorite.post.entrepreneur}
+                                createdAt={favorite.post.createdAt}
+                            />
+                        ))
+                    )}
                 </View>
             </LinearGradient>
         </View>
@@ -51,5 +72,24 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    emptyText: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    emptySubText: {
+        fontSize: 16,
+        color: 'white',
+        textAlign: 'center',
+        opacity: 0.8,
     },
 });
