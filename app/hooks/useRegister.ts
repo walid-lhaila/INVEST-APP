@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {register} from "@/app/redux/slices/AuthSlice";
 import Toast from "react-native-toast-message";
 import {useRouter} from "expo-router";
@@ -22,9 +22,10 @@ const useRegister = (role: 'Entrepreneur' | 'Investor') => {
         role: role
     })
 
-    const handleChange = (key: string, value: string) => {
+    const handleChange = useCallback((key: string, value: string) => {
         setFormData((prev) => ({...prev, [key]: value }));
-    };
+    }, []);
+
 
     const handleRegister = () => {
         const { firstName, lastName, username, phone, email, password } = formData;
@@ -48,7 +49,7 @@ const useRegister = (role: 'Entrepreneur' | 'Investor') => {
         }, 2000)
     };
 
-    return {handleChange, handleRegister, formData};
+    return {handleChange, handleRegister, formData, setFormData};
 };
 
 export default useRegister;

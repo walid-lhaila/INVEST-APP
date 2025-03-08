@@ -6,16 +6,17 @@ import React from "react";
 interface InputProps {
     placeHolder: string,
     iconName: string,
+    value: string;
     onChangeText: any;
     handler ?: any
 }
 
-const Input = ({placeHolder, iconName, onChangeText, handler = () => {}}: InputProps) => {
+const Input = ({placeHolder, value, iconName, onChangeText, handler = () => {}}: InputProps) => {
 
     return (
         <>
             <Ionicons name={iconName} color="#77a6f7" size={22} />
-            <TextInput onPress={handler} style={{ width: '100%' }} placeholder={placeHolder} onChangeText={onChangeText} />
+            <TextInput onPress={handler} style={{ width: '100%', paddingHorizontal: 10 }} value={value} placeholder={placeHolder} onChangeText={onChangeText} />
         </>
     )
 }

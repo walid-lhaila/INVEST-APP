@@ -9,7 +9,7 @@ import {markMessagesAsRead} from "@/app/redux/slices/ConversationSlice";
 
 function Chat() {
     const dispatch = useDispatch();
-    const {conversations, isLoading} = useGetAllConversations();
+    const {conversations} = useGetAllConversations();
     const Router = useRouter()
 
 
