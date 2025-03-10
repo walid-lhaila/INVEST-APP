@@ -17,7 +17,11 @@ const useCreatePosts = (onClose, imageUri) => {
     });
 
     const handleChange = (key, value) => {
-        setForm({ ...form, [key]: value });
+        console.log(`Updating ${key} with:`, value); // Debugging
+        setForm((prevForm) => ({
+            ...prevForm,
+            [key]: value,
+        }));
     };
 
     const handleSubmit = async () => {

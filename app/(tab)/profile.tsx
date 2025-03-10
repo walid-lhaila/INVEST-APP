@@ -55,6 +55,7 @@ function Profile() {
                     <DetailItem label="USERNAME" value={user.username} color="#77a6f7" />
                     <DetailItem label="MOBILE" value={user.phone} />
                     <DetailItem label="SERVICE" value={user.services} />
+                    <DetailItem label="INTERESTS" value={user.fieldOfInterest} />
                 </View>
 
                 {user.role === "Entrepreneur" ? (
@@ -90,7 +91,7 @@ function Profile() {
 
 const DetailItem = ({ label, value, color = "black", }) => (
     <View style={styles.detailItem}>
-        <Text>{label}</Text>
+        <Text style={{fontWeight: 600, fontSize: 16}}>{label}</Text>
         <Text style={{ color, paddingVertical: 3 }}>{value}</Text>
     </View>
 );
