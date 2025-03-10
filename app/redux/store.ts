@@ -8,6 +8,7 @@ import favoritesReducer from './slices/FavoritesSlice';
 import suggestionsReducer from './slices/SuggestionsSlice';
 import projectRealizedReducer from './slices/ProjectRealizedSlice';
 import conversationReducer from './slices/ConversationSlice';
+import tagsAndCategoriesReducer from './slices/TagsAndCategoriesSlice';
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         favorites: favoritesReducer,
         project: projectRealizedReducer,
         conversation: conversationReducer,
+        tagsAndCategories: tagsAndCategoriesReducer,
     },
 });
 export type RootState = ReturnType<typeof store.getState>;

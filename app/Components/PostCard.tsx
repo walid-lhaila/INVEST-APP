@@ -28,13 +28,13 @@ function PostCard({onPress, title, description ,category, location, currentInves
                 <Text style={{fontWeight: 900, fontSize: 20}}>{title}</Text>
             </View>
             <Text style={{paddingHorizontal: 10, fontSize: 14, fontWeight: 400, color: 'gray'}}>{description}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',  paddingHorizontal: 10,}}>
+            <View style={{paddingHorizontal: 10}}>
                 <View style={{flexDirection: 'row', gap: 8, paddingVertical: 10}}>
-                    <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13}}>
+                    <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13,}}>
                         <Text style={{fontWeight: 600, fontSize: 13}}>{category}</Text>
                     </View>
                 </View>
-                <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13}}>
+                <View style={{backgroundColor: '#f0f0f0', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 13, marginBottom: 15, alignItems: 'center'}}>
                     <Text style={{fontWeight: 600, fontSize: 13}}>{location}</Text>
                 </View>
             </View>

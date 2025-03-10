@@ -47,6 +47,7 @@ function UsersProfile() {
                     <DetailItem label="USERNAME" value={user.username} color="#77a6f7" />
                     <DetailItem label="MOBILE" value={user.phone} />
                     <DetailItem label="SERVICE" value={user.services} />
+                    <DetailItem label="INTERESTS" value={user.fieldOfInterest} />
                 </View>
 
                     <>
