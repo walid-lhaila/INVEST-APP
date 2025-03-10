@@ -18,7 +18,7 @@ function Favorites() {
                     <Text style={styles.header}>My Favorites</Text>
                     {favorites.length === 0 ? (
                         <View style={styles.emptyContainer}>
-                            <Ionicons name="bookmark" size={100} color="gray" />
+                            <Ionicons name="bookmark" size={100} color="white" />
                             <Text style={styles.emptyText}>No Favorites Yet</Text>
                             <Text style={styles.emptySubText}>
                                 Start adding your favorite posts to see them here!

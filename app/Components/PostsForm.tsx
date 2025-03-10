@@ -1,36 +1,49 @@
-import React, {useEffect, useState} from 'react';
-import {
-    StatusBar,
-    View,
-    TouchableOpacity,
-    ScrollView,
-    Alert,
-    Image,
-    Text,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable, ActivityIndicator
-} from "react-native";
+import React, {useCallback, useEffect, useState} from 'react';
+import {StatusBar, View, TouchableOpacity, ScrollView, Alert, Image, Text, StyleSheet, KeyboardAvoidingView, Platform, Pressable, ActivityIndicator} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomInput from '../Components/PostsInput';
 import useImagePicker from '../hooks/useImagePicker';
 import {useDispatch, useSelector} from "react-redux";
-import {createPosts} from "@/app/redux/slices/PostSlice";
 import {Ionicons} from "@expo/vector-icons";
 import useCreatePosts from "@/app/hooks/useCreatePosts";
 import {Toast} from "@/app/CustomToast";
 import {clearCities, fetchCities} from "@/app/redux/slices/CitiesSlice";
 import AutocompleteInput from "react-native-autocomplete-input";
+import debounce from "lodash.debounce";
+import {getTagsAndCategories} from "@/app/redux/slices/TagsAndCategoriesSlice";
 
 function PostsForm({onClose}) {
+    const dispatch = useDispatch();
     const {isLoading} = useSelector((state) => state.posts);
+    const {tags, categories, loading} = useSelector((state) => state.tagsAndCategories)
     const { imageUri, pickImage, setImageUri } = useImagePicker();
     const { form, handleChange, handleSubmit } = useCreatePosts(onClose, imageUri);
     const [query, setQuery] = useState('');
 
     const {cities} = useSelector((state) => state.cities);
-    const dispatch = useDispatch();
+
+    const debouncedSearch = useCallback(
+        debounce((description) => {
+            dispatch(getTagsAndCategories(description));
+        }, 1000),
+        [dispatch]
+    );
+
+    useEffect(() => {
+        if(!loading && tags.length > 0) {
+            handleChange('tags', tags.join(', '));
+        }
+        if (!loading && categories.length > 0) {
+            handleChange('category', categories.join(', '));
+        }
+    }, [tags, categories, loading]);
+
+    useEffect(() => {
+        if(form.description) {
+            debouncedSearch(form.description);
+        }
+    }, [form.description, debouncedSearch]);
+
 
     useEffect(() => {
         if(query.length > 2) {
@@ -58,7 +71,6 @@ function PostsForm({onClose}) {
 
                         <CustomInput value={form.title} onChangeText={(text) => handleChange('title', text)} placeholder="Title of the project" />
                         <CustomInput value={form.description} onChangeText={(text) => handleChange('description', text)} placeholder="Description" multiline />
-                        <CustomInput value={form.category} onChangeText={(text) => handleChange('category', text)} placeholder="Category" />
                         <CustomInput value={form.investmentGoal} onChangeText={(text) => handleChange('investmentGoal', text)} placeholder="Investment goal ($)" keyboardType="numeric" />
                         <CustomInput value={form.currentInvestment} onChangeText={(text) => handleChange('currentInvestment', text)} placeholder="Current investment ($)" keyboardType="numeric" />
                         <View style={styles.autocompleteContainer}>
@@ -73,7 +85,7 @@ function PostsForm({onClose}) {
                             />
                         </View>
                         <CustomInput value={form.tags} onChangeText={(text) => handleChange('tags', text)} placeholder="Tags (separated by commas, e.g., Finance, Startup)" />
-
+                        <CustomInput value={form.category} onChangeText={(text) => handleChange('category', text)} placeholder="Category" />
 
                         <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
                             <Text style={styles.imagePickerText}>{imageUri ? "Image sélectionnée" : "Sélectionner une image"}</Text>
