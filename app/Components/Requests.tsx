@@ -30,9 +30,17 @@ function Requests({onPress}: RequestProps) {
                         <Text style={styles.header}>My Invitations</Text>
                     </View>
                     <ScrollView contentContainerStyle={styles.requestList}>
-                        {requests.map((request) => (
-                            <RequestCard onAccept={handleAccept} onReject={handleReject} key={request._id} requestId={request._id} username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
-                        ))}
+                        {requests.length === 0 ? (
+                            <View style={styles.emptyContainer}>
+                                <Ionicons name="notifications-outline" size={100} color="white" />
+                                <Text style={styles.emptyText}>No Invitation Yet</Text>
+                            </View>
+                        ) : (
+                        requests.map((request) => (
+                                <RequestCard onAccept={handleAccept} onReject={handleReject} key={request._id} requestId={request._id} username={request.sender} role="Entrepreneur" createdAt={request.createdAt} />
+                            ))
+                        )}
+
                     </ScrollView>
                 </View>
             </LinearGradient>
@@ -66,5 +74,22 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: '100%',
+    },
+    emptyContainer: {
+        position: 'absolute',
+        flex: 1,
+        top: 160,
+        left: 50,
+        right: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    emptyText: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 10,
     },
 });
