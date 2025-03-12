@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, StyleSheet, Text, View} from "react-native";
+import {ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
 import useGetFavorites from "@/app/hooks/useGetFavorites";
 import {LinearGradient} from "expo-linear-gradient";
 import useRemoveFavorites from "@/app/hooks/useRemoveFavorites";
@@ -25,7 +25,8 @@ function Favorites() {
                             </Text>
                         </View>
                     ) : (
-                        favorites.map((favorite) => (
+                        <ScrollView>
+                            {favorites.map((favorite) => (
                             <FavoriteCard
                                 onDelete={() => handleDelete(favorite._id)}
                                 key={favorite._id}
@@ -38,7 +39,8 @@ function Favorites() {
                                 entrepreneur={favorite.post.entrepreneur}
                                 createdAt={favorite.post.createdAt}
                             />
-                        ))
+                        ))}
+                        </ScrollView>
                     )}
                 </View>
             </LinearGradient>
