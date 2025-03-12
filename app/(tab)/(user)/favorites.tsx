@@ -1,14 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StatusBar, StyleSheet, Text, View} from "react-native";
 import useGetFavorites from "@/app/hooks/useGetFavorites";
 import {LinearGradient} from "expo-linear-gradient";
 import useRemoveFavorites from "@/app/hooks/useRemoveFavorites";
 import FavoriteCard from "@/app/Components/FavoriteCard";
 import {Ionicons} from "@expo/vector-icons";
+import PostDetails from "@/app/Components/PostDetails";
+import {useRouter} from "expo-router";
 
 function Favorites() {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
     const {favorites} = useGetFavorites();
     const {handleDelete} = useRemoveFavorites();
+    const Router = useRouter();
+
+    const openPostDetails = (post) => {
+        setSelectedPost(post);
+        setModalVisible(true);
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -28,6 +38,7 @@ function Favorites() {
                         <ScrollView>
                             {favorites.map((favorite) => (
                             <FavoriteCard
+                                onPress={() => openPostDetails(favorite)}
                                 onDelete={() => handleDelete(favorite._id)}
                                 key={favorite._id}
                                 title={favorite.post.title}
@@ -41,6 +52,9 @@ function Favorites() {
                             />
                         ))}
                         </ScrollView>
+                    )}
+                    {selectedPost && (
+                        <PostDetails title={selectedPost.post.title} description={selectedPost.post.description} category={selectedPost.post.category} tags={selectedPost.post.tags} location={selectedPost.post.location} currentInvestment={selectedPost.post.currentInvestment} investmentGoal={selectedPost.post.investmentGoal} src={selectedPost.post.imageUrl} status={selectedPost.post.status} entrepreneur={selectedPost.post.entrepreneur} onClose={() => setModalVisible(false)} onUserDetails={() => Router.push({pathname: "/usersProfile", params: {username: selectedPost.post.entrepreneur}})} visible={modalVisible} id={selectedPost._id} key={selectedPost._id} />
                     )}
                 </View>
             </LinearGradient>

@@ -2,7 +2,6 @@ import React from 'react';
 import {ImageBackground, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import profile from "@/assets/images/profile.png";
 import {Ionicons} from "@expo/vector-icons";
-import {formatDistanceToNow} from "date-fns";
 import useAnimatedPercentage from "@/app/hooks/useAnimatedPercentage";
 
 interface UserFavoriteCardProps {
@@ -15,15 +14,16 @@ interface UserFavoriteCardProps {
     entrepreneur: string;
     createdAt: string;
     onDelete: () => void;
+    onPress: () => void;
 }
 
-function FavoriteCard({ title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, createdAt }: UserFavoriteCardProps) {
+function FavoriteCard({ title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, onPress, createdAt }: UserFavoriteCardProps) {
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
     const targetPercentage = Math.floor((currentInvestment / investmentGoal) * 100);
     const animatedPercentage = useAnimatedPercentage(targetPercentage)
 
     return (
-        <Pressable style={styles.card}>
+        <Pressable onPress={onPress} style={styles.card}>
             <View style={styles.header}>
                 <Text style={styles.title}>{title}</Text>
             </View>
