@@ -35,7 +35,7 @@ function Index() {
         setModalVisible(true);
     };
 
-    const filteredPosts = useFilteredPosts(posts, filter, searchQuery);
+    const filteredPosts = useFilteredPosts(posts || [], filter, searchQuery);
 
     return (
         requestVisible ? (
@@ -54,7 +54,7 @@ function Index() {
                                     <FilterBar setFilter={setFilter} />
                                 </Animated.View>
                                 <ScrollView style={{ paddingVertical: 10 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true}>
-                                    {filteredPosts.map((post) => (
+                                    {Array.isArray(filteredPosts) && filteredPosts.map((post) => (
                                         <PostCard
                                             key={post._id}
                                             onPress={() => openPostDetails(post)}

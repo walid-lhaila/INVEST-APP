@@ -21,10 +21,11 @@ const useFilteredPosts = (posts, filter, searchQuery) => {
         }
 
         if (searchQuery) {
+            const lowerCaseQuery = searchQuery.toLowerCase();
             filtered = filtered.filter(
                 (post) =>
                     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    post.category.toLowerCase().includes(searchQuery.toLowerCase())
+                    post.category.some(cat => cat.toLowerCase().includes(lowerCaseQuery))
             );
         }
 

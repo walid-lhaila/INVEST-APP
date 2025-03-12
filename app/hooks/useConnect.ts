@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { sendRequest } from "@/app/redux/slices/RequestSlice";
+import {getAllRequest, sendRequest} from "@/app/redux/slices/RequestSlice";
 import { Toast } from "@/app/CustomToast";
 
 const useConnect = (onClose: () => void) => {
@@ -15,6 +15,7 @@ const useConnect = (onClose: () => void) => {
             return;
         }
         dispatch(sendRequest({ receiver: entrepreneur })).unwrap()
+        dispatch(getAllRequest())
         Toast.show({
             type: "success",
             text1: "Request Sent Successfully",

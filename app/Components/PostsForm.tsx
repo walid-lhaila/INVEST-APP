@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, View, TouchableOpacity, ScrollView, Alert, Image, Text, StyleSheet, KeyboardAvoidingView, Platform, Pressable, ActivityIndicator} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomInput from '../Components/PostsInput';
@@ -9,25 +9,16 @@ import useCreatePosts from "@/app/hooks/useCreatePosts";
 import {Toast} from "@/app/CustomToast";
 import {clearCities, fetchCities} from "@/app/redux/slices/CitiesSlice";
 import AutocompleteInput from "react-native-autocomplete-input";
-import debounce from "lodash.debounce";
-import {getTagsAndCategories} from "@/app/redux/slices/TagsAndCategoriesSlice";
+import useLocationAutocomplete from "@/app/hooks/useLocationAutocomplete";
+import useTagsAndCategories from "@/app/hooks/useTagsAndCategories";
 
 function PostsForm({onClose}) {
     const dispatch = useDispatch();
     const {isLoading} = useSelector((state) => state.posts);
-    const {tags, categories, loading} = useSelector((state) => state.tagsAndCategories)
     const { imageUri, pickImage, setImageUri } = useImagePicker();
     const { form, handleChange, handleSubmit } = useCreatePosts(onClose, imageUri);
-    const [query, setQuery] = useState('');
-
-    const {cities} = useSelector((state) => state.cities);
-
-    const debouncedSearch = useCallback(
-        debounce((description) => {
-            dispatch(getTagsAndCategories(description));
-        }, 1000),
-        [dispatch]
-    );
+    const { query, setQuery, cities } = useLocationAutocomplete();
+    const { tags, categories, loading } = useTagsAndCategories();
 
     useEffect(() => {
         if(!loading && tags.length > 0) {
@@ -37,21 +28,6 @@ function PostsForm({onClose}) {
             handleChange('category', categories.join(', '));
         }
     }, [tags, categories, loading]);
-
-    useEffect(() => {
-        if(form.description) {
-            debouncedSearch(form.description);
-        }
-    }, [form.description, debouncedSearch]);
-
-
-    useEffect(() => {
-        if(query.length > 2) {
-            dispatch(fetchCities(query));
-        } else {
-            dispatch(clearCities());
-        }
-    }, [query]);
 
     return (
         <View style={styles.container}>

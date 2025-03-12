@@ -1,12 +1,13 @@
-import { Tabs } from "expo-router";
+import {Tabs} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeSocket } from "@/app/services/socket";
 import useUser from "@/app/hooks/useUser";
 import { Text } from "react-native";
 
 export default function TabLayout() {
+
     useEffect(() => {
         const initSocket = async () => {
             try {
@@ -22,6 +23,8 @@ export default function TabLayout() {
         };
         initSocket();
     }, []);
+
+
 
     const { user, loading } = useUser();
     if (loading) {

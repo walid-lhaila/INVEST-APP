@@ -19,6 +19,8 @@ import {sendRequest} from "@/app/redux/slices/RequestSlice";
 import {Toast} from "@/app/CustomToast";
 import useConnect from "@/app/hooks/useConnect";
 import useAddFavorite from "@/app/hooks/useAddFavorite";
+import useUser from "@/app/hooks/useUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface PostDetailsProps {
     title: string;
@@ -40,8 +42,8 @@ interface PostDetailsProps {
 function PostDetails({visible, onClose, title, description, location, category, currentInvestment, investmentGoal, src, status, entrepreneur, tags, onUserDetails, id}: PostDetailsProps) {
     const { handleConnect } = useConnect(onClose);
     const { handleAddFavorite } = useAddFavorite();
-    const truncateTitle = title.length > 20 ? title.substring(0, 24) + "..." : title;
-    const { user, isLoading, error, getUserByUsername } = useGetUserByUsername();
+    const { user: fetchedUser, isLoading, error, getUserByUsername } = useGetUserByUsername();
+    const {user: loggedInUser, loading} = useUser();
 
     useEffect(() => {
         if (visible && entrepreneur) {
@@ -107,10 +109,10 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                 <ActivityIndicator size="small" color="#77a6f7" />
                             ) : error ? (
                                 <Text style={styles.error}>Error: {error}</Text>
-                            ) : user ? (
+                            ) : fetchedUser ? (
                                 <>
-                                    <Text style={styles.qualification}>• {user.companyName}</Text>
-                                    <Text style={styles.qualification}>• {user.companyDescription}</Text>
+                                    <Text style={styles.qualification}>• {fetchedUser.companyName}</Text>
+                                    <Text style={styles.qualification}>• {fetchedUser.companyDescription}</Text>
                                 </>
                             ) : (
                                 <Text style={styles.error}>No company information available</Text>
@@ -123,7 +125,7 @@ function PostDetails({visible, onClose, title, description, location, category, 
                                 <ActivityIndicator size="small" color="#77a6f7" />
                             ) : error ? (
                                 <Text style={styles.error}>Error: {error}</Text>
-                            ) : user ? (
+                            ) : fetchedUser ? (
                                 <>
                                     <Pressable onPress={handleUserDetails} style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
                                         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 10 }}>
@@ -133,11 +135,11 @@ function PostDetails({visible, onClose, title, description, location, category, 
 
                                             <View>
                                                 <Text style={{ color: "black", fontSize: 17, fontWeight: "700", fontFamily: "Roboto" }}>
-                                                    {user.firstName} {user.lastName}
+                                                    {fetchedUser.firstName} {fetchedUser.lastName}
                                                 </Text>
                                                 <View style={{backgroundColor: "#77a6f7", flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 10,}}>
                                                     <Ionicons name={"briefcase-outline"} size={13} color={"white"} />
-                                                    <Text style={{ color: "white", fontSize: 13, fontWeight: "300", fontFamily: "serif" }}>{user.role}</Text>
+                                                    <Text style={{ color: "white", fontSize: 13, fontWeight: "300", fontFamily: "serif" }}>{fetchedUser.role}</Text>
                                                 </View>
                                             </View>
                                         </View>
@@ -150,15 +152,29 @@ function PostDetails({visible, onClose, title, description, location, category, 
                     </ScrollView>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => handleAddFavorite(id)} style={styles.favoriteButton}>
-                            <Ionicons name="bookmark-outline" size={20} color="white" />
-                            <Text style={styles.buttonText}>Favorite</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleConnect(entrepreneur)} style={styles.messageButton}>
-                            <Ionicons name="person-add-outline" size={20} color="white" />
-                            <Text style={styles.buttonText}>Connect</Text>
-                        </TouchableOpacity>
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="#77a6f7" />
+                        ) : error ? (
+                                <Text style={styles.error}>Error: {error}</Text>
+                            ) : loggedInUser && loggedInUser.role === "Entrepreneur" ? (
+                            <TouchableOpacity onPress={() => handleConnect(entrepreneur)} style={[styles.messageButton, loggedInUser && fetchedUser && loggedInUser.username === fetchedUser.username ? { backgroundColor: "#ccc" } : {}]} disabled={loggedInUser && fetchedUser && loggedInUser.username === fetchedUser.username}>
+                                <Ionicons name="person-add-outline" size={20} color="white" />
+                                <Text style={styles.buttonText}>Connect</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={{ flexDirection: "row", flex: 1 }}>
+                                <TouchableOpacity onPress={() => handleAddFavorite(id)} style={styles.favoriteButton}>
+                                    <Ionicons name="bookmark-outline" size={20} color="white" />
+                                    <Text style={styles.buttonText}>Favorite</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleConnect(entrepreneur)} style={styles.messageButton}>
+                                    <Ionicons name="person-add-outline" size={20} color="white" />
+                                    <Text style={styles.buttonText}>Connect</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
+
                 </View>
                 <Toast />
             </View>

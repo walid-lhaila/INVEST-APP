@@ -30,7 +30,7 @@ const initialState: ProjectState = {
 
 export const createProject = createAsyncThunk(
     'project/createProject',
-    async(projectData: ProjectData, {rejectWithValue}) => {
+    async(projectData: ProjectData, {rejectWithValue, dispatch}) => {
         try {
             const storedToken = await AsyncStorage.getItem('token');
             const response = await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/projects/create`,
@@ -45,6 +45,7 @@ export const createProject = createAsyncThunk(
                     },
                 }
                 );
+            dispatch(getAllProjectsByUser());
             return response.data
         } catch (error) {
             return rejectWithValue(error?.message || "Something went wrong")

@@ -30,14 +30,11 @@ function ChatComponent() {
     const { conversation, isLoading } = useFetchMessages(conversationId);
     useWebSocketMessages();
     const otherUser = conversation?.user1 === user?.username ? conversation?.user2 : conversation?.user1 || "Unknown";
-    console.log(otherUser);
     const handleSendMessage = useSendMessage(user, otherUser);
     const scrollViewRef = useAutoScroll([conversation?.messages]);
     if(isLoading || loading || !user) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
-    console.log("loggedIn User: ", user.username);
-
     return (
         <View style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
             <StatusBar translucent backgroundColor="transparent" />
