@@ -107,9 +107,8 @@ const styles = StyleSheet.create({
         color: 'gray',
     },
     infoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         marginVertical: 6,
+        gap: 8,
     },
     tag: {
         backgroundColor: '#f0f0f0',

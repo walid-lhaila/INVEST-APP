@@ -11,8 +11,8 @@ interface LoggedInUserProps {
 
 function LoggedInUser({onNotification}: LoggedInUserProps) {
     const {user, loading} = useUser();
-    const {requests} = useGetAllRequest();
-    if(loading) {
+    const {requests, isLoading} = useGetAllRequest();
+    if(loading || isLoading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
     return (

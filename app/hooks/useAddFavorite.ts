@@ -17,7 +17,7 @@ const useAddFavorite = () => {
             Toast.show({
                 type: "error",
                 text1: "Favorite Add Failed",
-                text2: "There was an issue adding this post to your favorites. Please try again.",
+                text2: "This Post Already Favorite",
             });
         }
     };
