@@ -1,6 +1,6 @@
 import { getSocket } from '@/app/services/socket';
 import { useDispatch } from 'react-redux';
-import { addMessage } from '@/app/redux/slices/ConversationSlice';
+import {addMessage, getAllConversationByUser} from '@/app/redux/slices/ConversationSlice';
 
 const useSendMessage = (user, receiverUsername: string) => {
     const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const useSendMessage = (user, receiverUsername: string) => {
             console.log(newMessage);
 
             dispatch(addMessage(newMessage));
+            dispatch(getAllConversationByUser());
 
             socket.emit('sendMessage', JSON.stringify(newMessage));
         }

@@ -1,12 +1,11 @@
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import {Stack, usePathname, useRouter} from "expo-router";
+import {useContext, useEffect, useState} from "react";
 import useUser from "@/app/hooks/useUser";
 import { Text } from "react-native";
 
 export default function UserLayout() {
     const router = useRouter();
     const { user, loading } = useUser();
-
     useEffect(() => {
         if (!loading) {
             if (user.role === "Entrepreneur") {
@@ -17,6 +16,8 @@ export default function UserLayout() {
         }
     }, [user, loading]);
 
+
+
     if (loading) {
         return <Text>Loading...</Text>;
     }
@@ -25,3 +26,6 @@ export default function UserLayout() {
         <Stack screenOptions={{ headerShown: false }} />
     );
 }
+
+
+

@@ -38,7 +38,7 @@ export const getAllPosts = createAsyncThunk(
 
 export const createPosts = createAsyncThunk(
     'posts/createPOst',
-    async({postData, file}: {postData: any; file: any}, {rejectWithValue}) => {
+    async({postData, file}: {postData: any; file: any}, {rejectWithValue, dispatch}) => {
         try {
             const storedToken = await AsyncStorage.getItem('token');
             if(!storedToken) {
@@ -71,6 +71,8 @@ export const createPosts = createAsyncThunk(
                     },
                 }
                 );
+            dispatch(getAllPostsByUser());
+            dispatch(getAllPosts());
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Something went wrong');
@@ -151,7 +153,7 @@ const postSlice = createSlice({
             })
             .addCase(createPosts.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.posts.push(action.payload);
+                state.posts = action.payload;
             })
             .addCase(createPosts.rejected, (state, action) => {
                 state.isLoading = false;
@@ -179,7 +181,7 @@ const postSlice = createSlice({
             })
             .addCase(deletePost.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.posts = state.posts.filter((post) => post._id === action.payload);
+                state.posts = state.posts.filter((post) => post._id !== action.payload);
                 state.userPosts = state.userPosts.filter((post) => post._id !== action.payload);
             })
             .addCase(deletePost.rejected, (state, action) => {

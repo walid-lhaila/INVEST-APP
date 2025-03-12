@@ -66,7 +66,7 @@ export const sendRequest = createAsyncThunk(
 
 export const acceptRequest = createAsyncThunk(
     'request/acceptRequest',
-    async({requestId, status}: {requestId: string; status: string}, {rejectWithValue}) => {
+    async({requestId, status}: {requestId: string; status: string}, {rejectWithValue, dispatch}) => {
         try {
             const storedToken = await AsyncStorage.getItem('token');
             if(!storedToken) {
@@ -79,6 +79,7 @@ export const acceptRequest = createAsyncThunk(
                     },
                 }
                 );
+            dispatch(getAllConversationByUser());
             return response.data;
         } catch (error) {
             return rejectWithValue(error?.response?.data?.message || "Something Went Wrong");
