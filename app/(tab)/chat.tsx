@@ -6,6 +6,7 @@ import {useRouter} from "expo-router";
 import useGetAllConversations from "@/app/hooks/useGetAllConversations";
 import {useDispatch} from "react-redux";
 import {markMessagesAsRead} from "@/app/redux/slices/ConversationSlice";
+import {Ionicons} from "@expo/vector-icons";
 
 function Chat() {
     const dispatch = useDispatch();
@@ -24,11 +25,21 @@ function Chat() {
                 </View>
                 <View style={styles.content}>
                     <Text style={{ marginTop: 20, color: 'black', fontWeight: 700,}}>ALL MESSAGES</Text>
-                    <ScrollView  showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ marginTop: 10}}>
-                        {conversations.map((conversation) => (
+                    {conversations.length === 0 ? (
+                        <View style={styles.emptyContainer}>
+                            <Ionicons name="chatbubble" size={140} color="#77a6f7" />
+                            <Text style={styles.emptyText}>No Conversations Yet</Text>
+                            <Text style={styles.emptySubText}>
+                                Start a conversation by connecting with entrepreneurs or investors!
+                            </Text>
+                        </View>
+                    ) : (
+                        <ScrollView  showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true} style={{ marginTop: 10}}>
+                            {conversations.map((conversation) => (
                                 <ConversationsCard key={conversation._id} onPress={() => {dispatch(markMessagesAsRead(conversation._id)); Router.push({ pathname: "/chatComponent", params: { conversationId: conversation._id } })}} conversation={conversation}/>
-                        ))}
-                    </ScrollView>
+                            ))}
+                        </ScrollView>
+                    )}
                 </View>
         </View>
     );
@@ -66,6 +77,27 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 25,
         overflow: 'hidden',
+    },
+
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginBottom: 80
+    },
+    emptyText: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: 'black',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    emptySubText: {
+        fontSize: 16,
+        color: 'black',
+        textAlign: 'center',
+        opacity: 0.8,
     },
 });
 

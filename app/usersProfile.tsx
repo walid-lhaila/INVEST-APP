@@ -87,7 +87,7 @@ function UsersProfile() {
 
 const DetailItem = ({ label, value, color = "black" }) => (
     <View style={styles.detailItem}>
-        <Text>{label}</Text>
+        <Text style={{fontWeight: 600, fontSize: 16}}>{label}</Text>
         <Text style={{ color, paddingVertical: 3 }}>{value}</Text>
     </View>
 );
