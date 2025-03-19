@@ -125,6 +125,50 @@ export const deletePost = createAsyncThunk(
     }
 );
 
+export const updatePost = createAsyncThunk (
+    'posts/updatePost',
+    async ({ postId, postData, file}: {postId: string, postData: any, file: any}, {rejectWithValue, dispatch}) => {
+        try {
+            const storedToken = await AsyncStorage.getItem('token');
+            if(!storedToken) {
+                return rejectWithValue('Authorization token is missing')
+            }
+
+            const formData = new FormData();
+            formData.append('title', postData.title);
+            formData.append('description', postData.description);
+            formData.append('category', postData.category);
+            formData.append('investmentGoal', postData.investmentGoal);
+            formData.append('currentInvestment', postData.currentInvestment);
+            formData.append('location', postData.location);
+            formData.append('status', postData.status);
+            if(file) {
+                formData.append('image', {
+                    uri: file.uri,
+                    type: file.type,
+                    name: file.name,
+                });
+            }
+
+            const response = await axios.put(`${process.env.EXPO_PUBLIC_BACKEND_URL}/posts/update/${postId}`,
+                formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${storedToken}`,
+                        'Content-Type': `multipart/form-data`,
+                    },
+                }
+                );
+            dispatch(getAllPostsByUser());
+            dispatch(getAllPosts());
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'something went wrong');
+        }
+    }
+);
+
 
 
 const postSlice = createSlice({
@@ -156,6 +200,21 @@ const postSlice = createSlice({
                 state.posts = action.payload;
             })
             .addCase(createPosts.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+
+            .addCase(updatePost.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updatePost.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+                state.userPosts = state.userPosts.map((post) => post._id === action.payload._id ? action.payload : post);
+            })
+            .addCase(updatePost.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })

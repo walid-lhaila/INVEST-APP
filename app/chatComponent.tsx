@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     receiver: {
         backgroundColor: 'white',
         marginTop: 15,
-        width: '60%',
+        width: '75%',
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderBottomEndRadius: 20,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     sender: {
         backgroundColor: '#77a6f7',
         marginTop: 15,
-        width: '60%',
+        width: '75%',
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderTopLeftRadius: 20,
