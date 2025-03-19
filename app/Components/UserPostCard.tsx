@@ -15,10 +15,11 @@ interface UserPostCardProps {
     entrepreneur: string;
     createdAt: string;
     onDelete: () => void;
+    onUpdate: () => void;
     onPress: () => void;
 }
 
-function UserPostCard({ onPress, title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, createdAt }: UserPostCardProps) {
+function UserPostCard({ onPress, title, description, category, location, currentInvestment, investmentGoal, entrepreneur, onDelete, onUpdate, createdAt }: UserPostCardProps) {
     const truncateTitle = title.length > 14 ? title.substring(0, 13) + '...' : title;
     const truncateUser = entrepreneur.length > 8 ? entrepreneur.substring(0, 13) + '...' : entrepreneur;
     const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
@@ -64,10 +65,15 @@ function UserPostCard({ onPress, title, description, category, location, current
                 </View>
                 <View style={styles.actions}>
                     <Text style={styles.time}>{timeAgo}</Text>
-                    <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
-                        <Ionicons name="trash-outline" size={20} color="white" />
-                    </TouchableOpacity>
                 </View>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10, gap: 10}}>
+                <TouchableOpacity onPress={onUpdate} style={styles.updateButton}>
+                    <Ionicons name="create-outline" size={22} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
+                    <Ionicons name="trash-outline" size={20} color="white" />
+                </TouchableOpacity>
             </View>
         </Pressable>
     );
@@ -168,6 +174,11 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         backgroundColor: 'red',
+        padding: 8,
+        borderRadius: 10,
+    },
+    updateButton: {
+        backgroundColor: '#77a6f7',
         padding: 8,
         borderRadius: 10,
     },
