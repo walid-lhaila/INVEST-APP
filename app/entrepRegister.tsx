@@ -18,11 +18,13 @@ import useRegister from "@/app/hooks/useRegister";
 import Toast from "react-native-toast-message";
 import FocusedInput from "@/app/Components/FocusedInput";
 import {useRegisterSuggestions} from "@/app/hooks/useRegisterSuggestions";
+import {useRouter} from "expo-router";
 
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
 function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Investor" }) {
+    const Router = useRouter();
     const {formData, handleChange, handleRegister, setFormData} = useRegister(role);
     const debouncedSearch = useRegisterSuggestions(setFormData);
 
@@ -38,7 +40,7 @@ function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Inv
             <SafeAreaView style={styles.safeArea}>
                 <KeyboardAvoidingView style={{ flex: 1, width: '80%', marginHorizontal: 'auto', justifyContent: 'center', marginTop: 15 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <Text style={styles.text}>Create Account as Entrepreneur</Text>
-                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                    <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
                         <View style={{ width: '100%'}}>
                             <FocusedInput>
                             <Input placeHolder="First Name" iconName="person-outline" onChangeText={(text) => handleChange('firstName', text)}  />
@@ -61,6 +63,9 @@ function EntrepRegister({ role = "Entrepreneur" }: { role: "Entrepreneur" | "Inv
                                 <LinearGradient colors={['#77a6f7', '#D3E3FC']} style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}} >
                                     <Ionicons name="arrow-forward" size={20} color='white' />
                                 </LinearGradient>
+                            </Pressable>
+                            <Pressable onPress={() => Router.push("/login")}>
+                                <Text style={styles.loginText}>Do you have an account ? login</Text>
                             </Pressable>
                         </View>
                 </ScrollView>
@@ -102,7 +107,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollViewContent: {
-        paddingTop: 20,
+        paddingTop: 10,
         justifyContent: "center",
+    },
+    loginText: {
+        fontWeight: "400",
+        textAlign: "center",
+        paddingTop: 25,
     },
 })

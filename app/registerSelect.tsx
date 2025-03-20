@@ -1,6 +1,17 @@
-import {Dimensions, ImageBackground, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    Dimensions,
+    ImageBackground,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import bg from "@/assets/images/bg.jpeg";
 import {useRouter} from "expo-router";
+import {Ionicons} from "@expo/vector-icons";
+import React from "react";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -11,6 +22,10 @@ const registerSelect = () => {
         <View style={styles.container}>
             <StatusBar translucent backgroundColor="transparent" />
             <ImageBackground source={bg} style={styles.backgroundImage} resizeMode="cover" />
+
+            <Pressable onPress={() => router.push('/login')} style={{ backgroundColor: 'white', position: 'absolute', marginTop: 50, marginLeft: 20 , paddingHorizontal: 7, paddingVertical: 7, borderRadius: 50,shadowColor: 'gray', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3,}}>
+                <Ionicons name="arrow-back" color="black" size={30} />
+            </Pressable>
 
             <View style={{justifyContent: 'center', width: '100%', height: '100%', margin: 'auto'}}>
                 <View style={{ gap: 15, width: '85%', marginHorizontal: 'auto'}}>

@@ -17,9 +17,6 @@ import useLogin from "@/app/hooks/useLogin";
 import {useRouter} from "expo-router";
 import {Toast} from "@/app/CustomToast";
 import FocusedInput from "@/app/Components/FocusedInput";
-import {useEffect} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {initializeSocket} from "@/app/services/socket";
 
 const { width } = Dimensions.get("window")
 const { height } = Dimensions.get("screen")
@@ -132,7 +129,7 @@ const styles = StyleSheet.create({
     createAccountText: {
         fontWeight: "400",
         textAlign: "center",
-        paddingTop: 80,
+        marginTop: 80,
     },
 })
 
