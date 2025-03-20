@@ -17,12 +17,14 @@ import useUser from "@/app/hooks/useUser";
 import {Toast} from "@/app/CustomToast";
 import useGetAllMyRealizedProject from "@/app/hooks/useGetAllMyRealizedProject";
 import useDeleteProjects from "@/app/hooks/useDeleteProjects";
+import useLogout from "@/app/hooks/useLogout";
 
 function Profile() {
     const [isModalVisible, setModalVisible] = useState(false);
     const { user, loading } = useUser();
     const {projects} = useGetAllMyRealizedProject();
     const { handleDelete } = useDeleteProjects();
+    const { handleLogout } = useLogout();
     if(loading) {
         return <ActivityIndicator size="large" color="#77a6f7" />;
     }
@@ -47,6 +49,9 @@ function Profile() {
 
             <TouchableOpacity onPress={toggleModal} style={styles.addButton}>
                 <Ionicons name={"add-sharp"} color="white" size={33} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                <Ionicons name={"log-out-outline"} color="white" size={33} />
             </TouchableOpacity>
 
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -156,11 +161,24 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 40,
+        bottom: 120,
         right: 20,
         zIndex: 1,
         alignItems: 'center',
         backgroundColor: '#77a6f7',
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderRadius: 50,
+        width: 50,
+        elevation: 5,
+    },
+    logoutButton: {
+        position: 'absolute',
+        bottom: 60,
+        right: 20,
+        zIndex: 1,
+        alignItems: 'center',
+        backgroundColor: 'red',
         paddingHorizontal: 10,
         paddingVertical: 8,
         borderRadius: 50,
